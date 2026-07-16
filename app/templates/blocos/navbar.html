@@ -1,0 +1,19 @@
+<header class="site-header">
+    <nav class="nav" aria-label="Navegacao principal">
+        <a class="brand" href="{% url 'home' %}">
+            <span class="brand-mark" aria-hidden="true">R</span>
+            <span>Ramalhete Espiritual</span>
+        </a>
+
+        <div class="nav-actions">
+            <a class="nav-link" href="{% url 'home' %}">Calendario</a>
+            {% if user.is_authenticated %}
+                <span class="nav-link">{{ user.username }}</span>
+                <a class="button secondary" href="{% url 'sair' %}">Sair</a>
+            {% else %}
+                <a class="nav-link" href="{% url 'entrar' %}">Entrar</a>
+                <a class="button" href="{% url 'registrar' %}">Criar conta</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>

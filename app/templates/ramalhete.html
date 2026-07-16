@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Ramalhete | Ramalhete Espiritual{% endblock %}
+
+{% block content %}
+<section>
+    <div class="ramalhete-header">
+        <div>
+            <p class="auth-kicker">Edicao do ramalhete</p>
+            <h1 class="section-heading">Ramalhete de {{ ramalhete.data|date:"d/m/Y" }}</h1>
+            <p class="section-copy">
+                Preencha os campos do dia e salve para atualizar suas ofertas deste periodo.
+            </p>
+        </div>
+        <a class="button secondary" href="{% url 'home' %}">Voltar ao calendario</a>
+    </div>
+
+    <form class="panel ramalhete-form" method="post" action="{% url 'editar_ramalhete' ramalhete.data|date:'Y-m-d' %}">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="field">
+                <label for="missa_comunhao">Missa e comunhao</label>
+                <input id="missa_comunhao" name="missa_comunhao" type="number" min="0" value="{{ ramalhete.missa_comunhao|default:0 }}">
+            </div>
+
+            <div class="field">
+                <label for="visita_ao_santissimo">Visita ao Santissimo</label>
+                <input id="visita_ao_santissimo" name="visita_ao_santissimo" type="number" min="0" value="{{ ramalhete.visita_ao_santissimo|default:0 }}">
+            </div>
+
+            <div class="field">
+                <label for="tercos">Tercos</label>
+                <input id="tercos" name="tercos" type="number" min="0" value="{{ ramalhete.tercos|default:0 }}">
+            </div>
+
+            <div class="field">
+                <label for="exame_de_consciencia">Exame de consciencia</label>
+                <input id="exame_de_consciencia" name="exame_de_consciencia" type="number" min="0" value="{{ ramalhete.exame_de_consciencia|default:0 }}">
+            </div>
+
+            <div class="field">
+                <label for="leitura_espiritual_meditacao">Leitura espiritual e meditacao</label>
+                <input id="leitura_espiritual_meditacao" name="leitura_espiritual_meditacao" type="number" min="0" value="{{ ramalhete.leitura_espiritual_meditacao|default:0 }}">
+            </div>
+
+            <div class="field">
+                <label for="sacrificio">Sacrificio</label>
+                <input id="sacrificio" name="sacrificio" type="number" min="0" value="{{ ramalhete.sacrificio|default:0 }}">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a class="button secondary" href="{% url 'home' %}">Cancelar</a>
+            <button class="button" type="submit">Salvar ramalhete</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

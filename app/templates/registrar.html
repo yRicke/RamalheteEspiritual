@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Criar conta | Ramalhete Espiritual{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+    <div>
+        <p class="auth-kicker">Novo usuario</p>
+        <h1 class="section-heading">Crie sua conta para organizar o mes.</h1>
+        <p class="section-copy">
+            Depois do cadastro, voce sera levado para a home e podera selecionar ano, mes e dia para abrir o ramalhete.
+        </p>
+    </div>
+
+    <form class="panel auth-panel form-stack" method="post" action="{% url 'registrar' %}">
+        {% csrf_token %}
+        <div class="field">
+            <label for="username">Usuario</label>
+            <input id="username" name="username" type="text" autocomplete="username" required>
+        </div>
+
+        <div class="field">
+            <label for="password">Senha</label>
+            <input id="password" name="password" type="password" autocomplete="new-password" required>
+        </div>
+
+        <button class="button" type="submit">Criar conta</button>
+        <a class="button secondary" href="{% url 'entrar' %}">Ja tenho conta</a>
+    </form>
+</section>
+{% endblock %}

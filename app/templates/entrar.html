@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrar | Ramalhete Espiritual{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+    <div>
+        <p class="auth-kicker">Autenticacao</p>
+        <h1 class="section-heading">Entre para continuar seu ramalhete.</h1>
+        <p class="section-copy">
+            Acesse sua conta para abrir o calendario, escolher o dia do mes e registrar suas praticas espirituais.
+        </p>
+    </div>
+
+    <form class="panel auth-panel form-stack" method="post" action="{% url 'entrar' %}">
+        {% csrf_token %}
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        <div class="field">
+            <label for="username">Usuario</label>
+            <input id="username" name="username" type="text" autocomplete="username" required>
+        </div>
+
+        <div class="field">
+            <label for="password">Senha</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+
+        <button class="button" type="submit">Entrar</button>
+        <a class="button secondary" href="{% url 'registrar' %}">Criar nova conta</a>
+    </form>
+</section>
+{% endblock %}

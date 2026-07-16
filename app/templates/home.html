@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Calendario | Ramalhete Espiritual{% endblock %}
+
+{% block content %}
+<section>
+    <p class="auth-kicker">Home</p>
+    <h1 class="section-heading">Escolha o ano e o mes.</h1>
+    <p class="section-copy">
+        Quando os campos estiverem preenchidos, o calendario aparece. Clique em um dia para abrir o ramalhete correspondente.
+    </p>
+
+    <form class="panel calendar-toolbar" id="calendarForm">
+        <div class="field">
+            <label for="yearInput">Ano</label>
+            <input id="yearInput" name="ano" type="number" min="1900" max="2200" placeholder="2026" required>
+        </div>
+
+        <div class="field">
+            <label for="monthInput">Mes</label>
+            <select id="monthInput" name="mes" required>
+                <option value="">Selecione</option>
+                <option value="1">Janeiro</option>
+                <option value="2">Fevereiro</option>
+                <option value="3">Marco</option>
+                <option value="4">Abril</option>
+                <option value="5">Maio</option>
+                <option value="6">Junho</option>
+                <option value="7">Julho</option>
+                <option value="8">Agosto</option>
+                <option value="9">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select>
+        </div>
+
+        <button class="button" type="submit">Mostrar mes</button>
+    </form>
+
+    <div class="panel calendar-wrap" id="calendarPanel" hidden>
+        <div class="calendar-head">
+            <h2 class="calendar-title" id="calendarTitle"></h2>
+            {% if user.is_authenticated %}
+                <span class="section-copy">Clique em um dia para editar.</span>
+            {% else %}
+                <a class="button secondary" href="{% url 'entrar' %}">Entrar para editar</a>
+            {% endif %}
+        </div>
+
+        <div class="weekday-row" aria-hidden="true">
+            <div class="weekday">Dom</div>
+            <div class="weekday">Seg</div>
+            <div class="weekday">Ter</div>
+            <div class="weekday">Qua</div>
+            <div class="weekday">Qui</div>
+            <div class="weekday">Sex</div>
+            <div class="weekday">Sab</div>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+</section>
+
+<script>
+    const monthNames = [
+        'Janeiro',
+        'Fevereiro',
+        'Marco',
+        'Abril',
+        'Maio',
+        'Junho',
+        'Julho',
+        'Agosto',
+        'Setembro',
+        'Outubro',
+        'Novembro',
+        'Dezembro'
+    ];
+
+    const form = document.getElementById('calendarForm');
+    const yearInput = document.getElementById('yearInput');
+    const monthInput = document.getElementById('monthInput');
+    const panel = document.getElementById('calendarPanel');
+    const title = document.getElementById('calendarTitle');
+    const grid = document.getElementById('calendarGrid');
+    const ramalheteUrlTemplate = "{% url 'abrir_ramalhate' '0000-00-00' %}";
+
+    function pad(value) {
+        return String(value).padStart(2, '0');
+    }
+
+    function openRamalhete(year, month, day) {
+        const date = `${year}-${pad(month)}-${pad(day)}`;
+        window.location.href = ramalheteUrlTemplate.replace('0000-00-00', date);
+    }
+
+    function renderCalendar(year, month) {
+        const firstDay = new Date(year, month - 1, 1).getDay();
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const today = new Date();
+
+        title.textContent = `${monthNames[month - 1]} de ${year}`;
+        grid.innerHTML = '';
+
+        for (let i = 0; i < firstDay; i += 1) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'day-cell empty';
+            grid.appendChild(emptyCell);
+        }
+
+        for (let day = 1; day <= daysInMonth; day += 1) {
+            const button = document.createElement('button');
+            const isToday = today.getFullYear() === Number(year) &&
+                today.getMonth() === month - 1 &&
+                today.getDate() === day;
+
+            button.type = 'button';
+            button.className = `day-cell${isToday ? ' today' : ''}`;
+            button.innerHTML = `<span class="day-number">${day}</span><span class="day-hint">Abrir ramalhete</span>`;
+            button.addEventListener('click', () => openRamalhete(year, month, day));
+            grid.appendChild(button);
+        }
+
+        panel.hidden = false;
+    }
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const year = Number(yearInput.value);
+        const month = Number(monthInput.value);
+
+        if (year && month) {
+            renderCalendar(year, month);
+        }
+    });
+
+    const now = new Date();
+    yearInput.value = now.getFullYear();
+    monthInput.value = now.getMonth() + 1;
+    renderCalendar(now.getFullYear(), now.getMonth() + 1);
+</script>
+{% endblock %}
