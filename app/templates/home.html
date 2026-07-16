@@ -40,7 +40,16 @@
 
     <div class="panel calendar-wrap" id="calendarPanel" hidden>
         <div class="calendar-head">
-            <h2 class="calendar-title" id="calendarTitle"></h2>
+            <div>
+                <h2 class="calendar-title" id="calendarTitle"></h2>
+                {% if user.is_authenticated %}
+                    <div class="calendar-legend" aria-label="Legenda do calendario">
+                        <span><i class="status-dot complete"></i>Preenchido</span>
+                        <span><i class="status-dot pending"></i>Em branco</span>
+                        <span><i class="status-dot empty"></i>Sem ramalhete</span>
+                    </div>
+                {% endif %}
+            </div>
             {% if user.is_authenticated %}
                 <span class="section-copy">Clique em um dia para editar.</span>
             {% else %}
@@ -61,6 +70,8 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 </section>
+
+{{ status_por_data|json_script:"calendarStatus" }}
 
 <script>
     const monthNames = [
@@ -85,6 +96,7 @@
     const title = document.getElementById('calendarTitle');
     const grid = document.getElementById('calendarGrid');
     const ramalheteUrlTemplate = "{% url 'abrir_ramalhate' '0000-00-00' %}";
+    const calendarStatus = JSON.parse(document.getElementById('calendarStatus').textContent);
 
     function pad(value) {
         return String(value).padStart(2, '0');
@@ -111,13 +123,15 @@
 
         for (let day = 1; day <= daysInMonth; day += 1) {
             const button = document.createElement('button');
+            const date = `${year}-${pad(month)}-${pad(day)}`;
+            const ramalheteStatus = calendarStatus[date] || '';
             const isToday = today.getFullYear() === Number(year) &&
                 today.getMonth() === month - 1 &&
                 today.getDate() === day;
 
             button.type = 'button';
-            button.className = `day-cell${isToday ? ' today' : ''}`;
-            button.innerHTML = `<span class="day-number">${day}</span><span class="day-hint">Abrir ramalhete</span>`;
+            button.className = `day-cell${ramalheteStatus ? ` ${ramalheteStatus}` : ''}${isToday ? ' today' : ''}`;
+            button.innerHTML = `<span class="day-number">${day}</span><span class="day-hint">${ramalheteStatus === 'complete' ? 'Preenchido' : ramalheteStatus === 'pending' ? 'Em branco' : 'Abrir ramalhete'}</span>`;
             button.addEventListener('click', () => openRamalhete(year, month, day));
             grid.appendChild(button);
         }

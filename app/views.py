@@ -9,7 +9,24 @@ from django.utils.dateparse import parse_date
 # Create your views here.
 
 def home(request):
-    return render(request, 'home.html')
+    campos_de_praticas = (
+        'missa_comunhao',
+        'visita_ao_santissimo',
+        'tercos',
+        'exame_de_consciencia',
+        'leitura_espiritual_meditacao',
+        'sacrificio',
+    )
+    status_por_data = {}
+
+    if request.user.is_authenticated:
+        ramalhetes = Ramalhete.objects.filter(usuario=request.user).values('data', *campos_de_praticas)
+        for ramalhete in ramalhetes:
+            data = ramalhete['data'].isoformat()
+            possui_pratica_registrada = any(ramalhete[campo] != 0 for campo in campos_de_praticas)
+            status_por_data[data] = 'complete' if possui_pratica_registrada else 'pending'
+
+    return render(request, 'home.html', {'status_por_data': status_por_data})
 
 def entrar(request):
     if request.method == 'POST':

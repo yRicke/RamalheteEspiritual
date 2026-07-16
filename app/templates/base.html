@@ -267,6 +267,36 @@
             font-size: 1.35rem;
         }
 
+        .calendar-legend {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 9px;
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .calendar-legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #d7dcda;
+        }
+
+        .status-dot.complete {
+            background: #38815a;
+        }
+
+        .status-dot.pending {
+            background: #d49b22;
+        }
+
         .weekday-row,
         .calendar-grid {
             display: grid;
@@ -303,6 +333,22 @@
             background: var(--surface-soft);
         }
 
+        .day-cell.complete {
+            background: #e9f4ec;
+        }
+
+        .day-cell.complete:hover {
+            background: #dceee2;
+        }
+
+        .day-cell.pending {
+            background: #fff5dc;
+        }
+
+        .day-cell.pending:hover {
+            background: #ffedc0;
+        }
+
         .day-cell.empty {
             cursor: default;
             background: #fafafa;
@@ -317,6 +363,21 @@
             border-radius: 50%;
             font-weight: 800;
             color: var(--green-strong);
+        }
+
+        .day-cell.today .day-number {
+            background: var(--wine);
+            color: #ffffff;
+        }
+
+        .day-cell.complete .day-number {
+            background: #38815a;
+            color: #ffffff;
+        }
+
+        .day-cell.pending .day-number {
+            background: #d49b22;
+            color: #ffffff;
         }
 
         .day-cell.today .day-number {
