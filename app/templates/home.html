@@ -6,38 +6,30 @@
 {% block content %}
 <section>
     <p class="auth-kicker">Home</p>
-    <h1 class="section-heading">Escolha o ano e o mes.</h1>
+    <h1 class="section-heading">Seu calendario espiritual.</h1>
     <p class="section-copy">
-        Quando os campos estiverem preenchidos, o calendario aparece. Clique em um dia para abrir o ramalhete correspondente.
+        Navegue pelos meses e clique em um dia para abrir o ramalhete correspondente.
     </p>
 
-    <form class="panel calendar-toolbar" id="calendarForm">
-        <div class="field">
-            <label for="yearInput">Ano</label>
-            <input id="yearInput" name="ano" type="number" min="1900" max="2200" placeholder="2026" required>
+    <div class="panel calendar-toolbar" aria-label="Navegacao do calendario">
+        <div class="period-control">
+            <span class="period-label">Ano</span>
+            <div class="period-stepper">
+                <button class="stepper-button" id="previousYear" type="button" aria-label="Ano anterior" title="Ano anterior">&larr;</button>
+                <output class="period-value" id="yearDisplay" aria-live="polite"></output>
+                <button class="stepper-button" id="nextYear" type="button" aria-label="Proximo ano" title="Proximo ano">&rarr;</button>
+            </div>
         </div>
 
-        <div class="field">
-            <label for="monthInput">Mes</label>
-            <select id="monthInput" name="mes" required>
-                <option value="">Selecione</option>
-                <option value="1">Janeiro</option>
-                <option value="2">Fevereiro</option>
-                <option value="3">Marco</option>
-                <option value="4">Abril</option>
-                <option value="5">Maio</option>
-                <option value="6">Junho</option>
-                <option value="7">Julho</option>
-                <option value="8">Agosto</option>
-                <option value="9">Setembro</option>
-                <option value="10">Outubro</option>
-                <option value="11">Novembro</option>
-                <option value="12">Dezembro</option>
-            </select>
+        <div class="period-control">
+            <span class="period-label">Mes</span>
+            <div class="period-stepper">
+                <button class="stepper-button" id="previousMonth" type="button" aria-label="Mes anterior" title="Mes anterior">&larr;</button>
+                <output class="period-value" id="monthDisplay" aria-live="polite"></output>
+                <button class="stepper-button" id="nextMonth" type="button" aria-label="Proximo mes" title="Proximo mes">&rarr;</button>
+            </div>
         </div>
-
-        <button class="button" type="submit">Mostrar mes</button>
-    </form>
+    </div>
 
     <div class="panel calendar-wrap" id="calendarPanel" hidden>
         <div class="calendar-head">
@@ -58,17 +50,19 @@
             {% endif %}
         </div>
 
-        <div class="weekday-row" aria-hidden="true">
-            <div class="weekday">Dom</div>
-            <div class="weekday">Seg</div>
-            <div class="weekday">Ter</div>
-            <div class="weekday">Qua</div>
-            <div class="weekday">Qui</div>
-            <div class="weekday">Sex</div>
-            <div class="weekday">Sab</div>
-        </div>
+        <div class="calendar-body" id="calendarBody">
+            <div class="weekday-row" aria-hidden="true">
+                <div class="weekday">Dom</div>
+                <div class="weekday">Seg</div>
+                <div class="weekday">Ter</div>
+                <div class="weekday">Qua</div>
+                <div class="weekday">Qui</div>
+                <div class="weekday">Sex</div>
+                <div class="weekday">Sab</div>
+            </div>
 
-        <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
     </div>
 </section>
 

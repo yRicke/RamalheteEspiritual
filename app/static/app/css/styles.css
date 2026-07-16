@@ -233,16 +233,107 @@ textarea {
 
 .calendar-toolbar {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
-    align-items: end;
     padding: 22px;
     margin-top: 28px;
+}
+
+.period-control {
+    display: grid;
+    gap: 7px;
+}
+
+.period-label {
+    color: var(--green-strong);
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+
+.period-stepper {
+    min-height: 48px;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #ffffff;
+}
+
+.period-value {
+    min-width: 0;
+    color: var(--green-strong);
+    font-size: 1.08rem;
+    font-weight: 800;
+    text-align: center;
+}
+
+.stepper-button {
+    width: 42px;
+    height: 46px;
+    border: 0;
+    background: transparent;
+    color: var(--green-strong);
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 800;
+    transition: background 160ms ease, color 160ms ease;
+}
+
+.stepper-button:hover:not(:disabled) {
+    background: var(--surface-soft);
+    color: var(--green);
+}
+
+.stepper-button:focus-visible {
+    outline: 3px solid rgba(47, 111, 84, 0.22);
+    outline-offset: -3px;
+}
+
+.stepper-button:disabled {
+    color: #bcc4bd;
+    cursor: not-allowed;
 }
 
 .calendar-wrap {
     margin-top: 20px;
     overflow: hidden;
+}
+
+.calendar-body {
+    overflow: hidden;
+}
+
+.calendar-body.slide-left {
+    animation: calendar-slide-left 260ms ease-out;
+}
+
+.calendar-body.slide-right {
+    animation: calendar-slide-right 260ms ease-out;
+}
+
+@keyframes calendar-slide-left {
+    from {
+        opacity: 0.35;
+        transform: translateX(-18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes calendar-slide-right {
+    from {
+        opacity: 0.35;
+        transform: translateX(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .calendar-head {
