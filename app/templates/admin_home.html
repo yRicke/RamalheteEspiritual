@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Painel administrativo | Ramalhete Espiritual{% endblock %}
+
+{% block content %}
+<section>
+    <p class="auth-kicker">Administracao</p>
+    <h1 class="section-heading">Painel do Ramalhete Espiritual.</h1>
+    <p class="section-copy">
+        Acompanhe os totais de todos os usuarios e gerencie as contas de acesso.
+    </p>
+
+    {% if messages %}
+        <div class="message-stack" aria-live="polite">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="panel calendar-toolbar" aria-label="Periodo do resumo">
+        <div class="period-control">
+            <span class="period-label">Ano</span>
+            <div class="period-stepper">
+                <button class="stepper-button" id="adminPreviousYear" type="button" aria-label="Ano anterior" title="Ano anterior">&larr;</button>
+                <output class="period-value" id="adminYearDisplay" aria-live="polite"></output>
+                <button class="stepper-button" id="adminNextYear" type="button" aria-label="Proximo ano" title="Proximo ano">&rarr;</button>
+            </div>
+        </div>
+
+        <div class="period-control">
+            <span class="period-label">Mes</span>
+            <div class="period-stepper">
+                <button class="stepper-button" id="adminPreviousMonth" type="button" aria-label="Mes anterior" title="Mes anterior">&larr;</button>
+                <output class="period-value" id="adminMonthDisplay" aria-live="polite"></output>
+                <button class="stepper-button" id="adminNextMonth" type="button" aria-label="Proximo mes" title="Proximo mes">&rarr;</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="monthly-summary" aria-labelledby="adminSummaryTitle">
+    <div class="summary-header">
+        <div>
+            <p class="auth-kicker">Resumo geral</p>
+            <h2 class="calendar-title" id="adminSummaryTitle">Ofertas de todos os usuarios</h2>
+        </div>
+        <p class="section-copy" id="adminSummaryPeriod" aria-live="polite"></p>
+    </div>
+
+    <div class="summary-grid" id="adminSummaryGrid">
+        <article class="summary-card">
+            <span>Missa e comunhao</span>
+            <strong data-admin-summary-field="missa_comunhao">0</strong>
+        </article>
+        <article class="summary-card">
+            <span>Visita ao Santissimo</span>
+            <strong data-admin-summary-field="visita_ao_santissimo">0</strong>
+        </article>
+        <article class="summary-card">
+            <span>Tercos</span>
+            <strong data-admin-summary-field="tercos">0</strong>
+        </article>
+        <article class="summary-card">
+            <span>Exame de consciencia</span>
+            <strong data-admin-summary-field="exame_de_consciencia">0</strong>
+        </article>
+        <article class="summary-card">
+            <span>Leitura espiritual e meditacao</span>
+            <strong data-admin-summary-field="leitura_espiritual_meditacao">0</strong>
+        </article>
+        <article class="summary-card">
+            <span>Sacrificio</span>
+            <strong data-admin-summary-field="sacrificio">0</strong>
+        </article>
+    </div>
+</section>
+
+<section class="admin-users" aria-labelledby="adminUsersTitle">
+    <div class="summary-header">
+        <div>
+            <p class="auth-kicker">Acessos</p>
+            <h2 class="calendar-title" id="adminUsersTitle">Usuarios cadastrados</h2>
+        </div>
+        <p class="section-copy">{{ usuarios|length }} conta{{ usuarios|length|pluralize }}</p>
+    </div>
+
+    <div class="admin-users-layout">
+        <form class="panel admin-user-create form-stack" method="post" action="{% url 'criar_usuario' %}">
+            {% csrf_token %}
+            <h3 class="compact-heading">Novo usuario</h3>
+
+            <div class="field">
+                <label for="newUsername">Nome de usuario</label>
+                <input id="newUsername" name="username" type="text" autocomplete="off" required>
+            </div>
+
+            <div class="field">
+                <label for="newPassword">Senha inicial</label>
+                <input id="newPassword" name="password" type="password" autocomplete="new-password" required>
+            </div>
+
+            <label class="checkbox-field">
+                <input type="checkbox" data-password-toggle="newPassword">
+                <span>Mostrar senha</span>
+            </label>
+
+            <button class="button" type="submit">Criar usuario</button>
+        </form>
+
+        <div class="panel admin-user-list">
+            {% for account in usuarios %}
+                <form class="admin-user-form" method="post" action="{% url 'editar_usuario' account.id %}">
+                    {% csrf_token %}
+
+                    <div class="field">
+                        <label for="username-{{ account.id }}">Nome de usuario</label>
+                        <input id="username-{{ account.id }}" name="username" type="text" value="{{ account.username }}" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="password-{{ account.id }}">Nova senha</label>
+                        <input id="password-{{ account.id }}" name="password" type="password" autocomplete="new-password" placeholder="Manter senha atual">
+                    </div>
+
+                    <div class="admin-user-options">
+                        <label class="checkbox-field">
+                            <input name="is_active" type="checkbox" {% if account.is_active %}checked{% endif %}>
+                            <span>Ativo</span>
+                        </label>
+                        <label class="checkbox-field">
+                            <input type="checkbox" data-password-toggle="password-{{ account.id }}">
+                            <span>Mostrar senha</span>
+                        </label>
+                    </div>
+
+                    <button class="button secondary" type="submit">Salvar</button>
+                </form>
+            {% empty %}
+                <p class="empty-state">Nenhum usuario cadastrado.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div
+    id="adminDashboardConfig"
+    data-summary-url="{% url 'resumo_admin_mensal' 0 0 %}"
+    hidden
+></div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'app/js/admin_dashboard.js' %}" defer></script>
+{% endblock %}

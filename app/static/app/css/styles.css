@@ -342,6 +342,108 @@ textarea {
     line-height: 1;
 }
 
+.summary-grid.slide-left {
+    animation: calendar-slide-left 260ms ease-out;
+}
+
+.summary-grid.slide-right {
+    animation: calendar-slide-right 260ms ease-out;
+}
+
+.message-stack {
+    display: grid;
+    gap: 8px;
+    margin-top: 22px;
+}
+
+.message {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+    padding: 11px 13px;
+    font-weight: 700;
+}
+
+.message.success {
+    border-color: rgba(56, 129, 90, 0.34);
+    background: #e9f4ec;
+    color: var(--green-strong);
+}
+
+.message.error {
+    border-color: rgba(126, 41, 54, 0.28);
+    background: rgba(126, 41, 54, 0.08);
+    color: var(--wine);
+}
+
+.admin-users {
+    margin-top: 38px;
+}
+
+.admin-users-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.admin-user-create {
+    padding: 22px;
+}
+
+.compact-heading {
+    margin: 0;
+    color: var(--green-strong);
+    font-size: 1.08rem;
+}
+
+.checkbox-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.checkbox-field input {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--green);
+}
+
+.admin-user-list {
+    overflow: hidden;
+}
+
+.admin-user-form {
+    display: grid;
+    grid-template-columns: minmax(150px, 1fr) minmax(180px, 1fr) auto auto;
+    gap: 14px;
+    align-items: end;
+    padding: 18px;
+    border-bottom: 1px solid var(--line);
+}
+
+.admin-user-form:last-child {
+    border-bottom: 0;
+}
+
+.admin-user-options {
+    min-height: 46px;
+    display: grid;
+    align-content: center;
+    gap: 5px;
+}
+
+.empty-state {
+    margin: 0;
+    padding: 28px;
+    color: var(--muted);
+    text-align: center;
+}
+
 .calendar-body {
     overflow: hidden;
 }
@@ -603,6 +705,14 @@ textarea {
         align-items: flex-start;
     }
 
+    .admin-users-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-user-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .day-cell {
         min-height: 70px;
         padding: 7px;
@@ -629,5 +739,9 @@ textarea {
 
     .summary-card strong {
         font-size: 1.7rem;
+    }
+
+    .admin-user-form {
+        grid-template-columns: 1fr;
     }
 }

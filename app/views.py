@@ -1,34 +1,67 @@
 import json
+from functools import wraps
 
-from django.http import Http404, JsonResponse
-from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from .models import Ramalhete
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.db.models import Sum
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.dateparse import parse_date
 
-# Create your views here.
+from .models import Ramalhete
+
+
+PRACTICE_FIELDS = (
+    'missa_comunhao',
+    'visita_ao_santissimo',
+    'tercos',
+    'exame_de_consciencia',
+    'leitura_espiritual_meditacao',
+    'sacrificio',
+)
+
+
+def superuser_required(view_func):
+    @wraps(view_func)
+    def wrapped_view(request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return view_func(request, *args, **kwargs)
+
+    return login_required(wrapped_view, login_url='entrar')
+
+
+def get_totals(queryset):
+    totals = queryset.aggregate(**{
+        field: Sum(field)
+        for field in PRACTICE_FIELDS
+    })
+    return {
+        field: totals[field] or 0
+        for field in PRACTICE_FIELDS
+    }
+
 
 def home(request):
-    campos_de_praticas = (
-        'missa_comunhao',
-        'visita_ao_santissimo',
-        'tercos',
-        'exame_de_consciencia',
-        'leitura_espiritual_meditacao',
-        'sacrificio',
-    )
+    if request.user.is_superuser:
+        usuarios = User.objects.filter(is_superuser=False).order_by('username')
+        return render(request, 'admin_home.html', {'usuarios': usuarios})
+
     status_por_data = {}
 
     if request.user.is_authenticated:
-        ramalhetes = Ramalhete.objects.filter(usuario=request.user).values('data', *campos_de_praticas)
+        ramalhetes = Ramalhete.objects.filter(usuario=request.user).values('data', *PRACTICE_FIELDS)
         for ramalhete in ramalhetes:
             data = ramalhete['data'].isoformat()
-            possui_pratica_registrada = any(ramalhete[campo] != 0 for campo in campos_de_praticas)
+            possui_pratica_registrada = any(ramalhete[campo] != 0 for campo in PRACTICE_FIELDS)
             status_por_data[data] = 'complete' if possui_pratica_registrada else 'pending'
 
     return render(request, 'home.html', {'status_por_data': json.dumps(status_por_data)})
+
 
 def entrar(request):
     if request.method == 'POST':
@@ -38,22 +71,14 @@ def entrar(request):
         if user is not None:
             login(request, user)
             return redirect('home')
-        else:
-            return render(request, 'entrar.html', {'error': 'Credenciais inválidas'})
+        return render(request, 'entrar.html', {'error': 'Credenciais invalidas'})
     return render(request, 'entrar.html')
+
 
 def sair(request):
     logout(request)
     return redirect('home')
 
-def registrar(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = User.objects.create_user(username=username, password=password)
-        login(request, user)
-        return redirect('home')
-    return render(request, 'registrar.html')
 
 @login_required(login_url='entrar')
 def abrir_ramalhate(request, data):
@@ -75,19 +100,94 @@ def abrir_ramalhate(request, data):
     )
     return render(request, 'ramalhete.html', {'ramalhete': ramalhete})
 
+
 @login_required(login_url='entrar')
 def resumo_mensal(request, ano, mes):
     if not 1900 <= ano <= 2200 or not 1 <= mes <= 12:
         raise Http404("Periodo invalido")
 
-    return JsonResponse({
-        'missa_comunhao': Ramalhete.get_total_missas_comunhao_por_usuario_mes_ano(request.user, mes, ano),
-        'visita_ao_santissimo': Ramalhete.get_total_visitas_ao_santissimo_por_usuario_mes_ano(request.user, mes, ano),
-        'tercos': Ramalhete.get_total_tercos_por_usuario_mes_ano(request.user, mes, ano),
-        'exame_de_consciencia': Ramalhete.get_total_exames_de_consciencia_por_usuario_mes_ano(request.user, mes, ano),
-        'leitura_espiritual_meditacao': Ramalhete.get_total_leituras_espirituais_por_usuario_mes_ano(request.user, mes, ano),
-        'sacrificio': Ramalhete.get_total_sacrificios_por_usuario_mes_ano(request.user, mes, ano),
-    })
+    ramalhetes = Ramalhete.objects.filter(
+        usuario=request.user,
+        data__year=ano,
+        data__month=mes,
+    )
+    return JsonResponse(get_totals(ramalhetes))
+
+
+@superuser_required
+def resumo_admin_mensal(request, ano, mes):
+    if not 1900 <= ano <= 2200 or not 1 <= mes <= 12:
+        raise Http404("Periodo invalido")
+
+    ramalhetes = Ramalhete.objects.filter(
+        usuario__is_superuser=False,
+        data__year=ano,
+        data__month=mes,
+    )
+    return JsonResponse(get_totals(ramalhetes))
+
+
+@superuser_required
+def criar_usuario(request):
+    if request.method != 'POST':
+        return redirect('home')
+
+    username = request.POST.get('username', '').strip()
+    password = request.POST.get('password', '')
+
+    if not username or not password:
+        messages.error(request, 'Informe o nome de usuario e a senha.')
+        return redirect('home')
+
+    if User.objects.filter(username__iexact=username).exists():
+        messages.error(request, 'Ja existe um usuario com esse nome.')
+        return redirect('home')
+
+    usuario = User(username=username)
+    try:
+        validate_password(password, usuario)
+    except ValidationError as error:
+        messages.error(request, ' '.join(error.messages))
+        return redirect('home')
+
+    usuario.set_password(password)
+    usuario.save()
+    messages.success(request, f'Usuario {username} criado com sucesso.')
+    return redirect('home')
+
+
+@superuser_required
+def editar_usuario(request, usuario_id):
+    if request.method != 'POST':
+        return redirect('home')
+
+    usuario = get_object_or_404(User, id=usuario_id, is_superuser=False)
+    username = request.POST.get('username', '').strip()
+    password = request.POST.get('password', '')
+    is_active = request.POST.get('is_active') == 'on'
+
+    if not username:
+        messages.error(request, 'O nome de usuario nao pode ficar vazio.')
+        return redirect('home')
+
+    if User.objects.filter(username__iexact=username).exclude(id=usuario.id).exists():
+        messages.error(request, 'Ja existe um usuario com esse nome.')
+        return redirect('home')
+
+    if password:
+        try:
+            validate_password(password, usuario)
+        except ValidationError as error:
+            messages.error(request, ' '.join(error.messages))
+            return redirect('home')
+        usuario.set_password(password)
+
+    usuario.username = username
+    usuario.is_active = is_active
+    usuario.save()
+    messages.success(request, f'Usuario {username} atualizado.')
+    return redirect('home')
+
 
 @login_required(login_url='entrar')
 def editar_ramalhete(request, data):
@@ -98,17 +198,9 @@ def editar_ramalhete(request, data):
     if request.method != 'POST':
         return JsonResponse({'erro': 'Metodo nao permitido.'}, status=405)
 
-    campos_editaveis = {
-        'missa_comunhao',
-        'visita_ao_santissimo',
-        'tercos',
-        'exame_de_consciencia',
-        'leitura_espiritual_meditacao',
-        'sacrificio',
-    }
     campo = request.POST.get('campo')
 
-    if campo not in campos_editaveis:
+    if campo not in PRACTICE_FIELDS:
         return JsonResponse({'erro': 'Campo invalido.'}, status=400)
 
     try:

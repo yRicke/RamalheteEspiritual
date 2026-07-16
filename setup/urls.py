@@ -22,9 +22,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('entrar/', views.entrar, name='entrar'),
-    path('registrar/', views.registrar, name='registrar'),
     path('sair/', views.sair, name='sair'),
     path('ramalhete/<str:data>/', views.abrir_ramalhate, name='abrir_ramalhate'),
     path('resumo/<int:ano>/<int:mes>/', views.resumo_mensal, name='resumo_mensal'),
+    path('painel/resumo/<int:ano>/<int:mes>/', views.resumo_admin_mensal, name='resumo_admin_mensal'),
+    path('painel/usuarios/criar/', views.criar_usuario, name='criar_usuario'),
+    path('painel/usuarios/<int:usuario_id>/editar/', views.editar_usuario, name='editar_usuario'),
     path('ramalhete/<str:data>/editar/', views.editar_ramalhete, name='editar_ramalhete'),
 ]
