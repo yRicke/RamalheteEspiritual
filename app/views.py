@@ -1,8 +1,10 @@
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from .models import Ramalhete
 from django.contrib.auth.decorators import login_required
+from django.utils.dateparse import parse_date
 
 # Create your views here.
 
@@ -36,23 +38,40 @@ def registrar(request):
 
 @login_required(login_url='entrar')
 def abrir_ramalhate(request, data):
-    if Ramalhete.objects.filter(usuario=request.user, data=data).exists():
-        ramalhete = Ramalhete.objects.get(usuario=request.user, data=data)
-    else:
-        ramalhete = Ramalhete.objects.create(usuario=request.user, data=data, missa_comunhao=0, visita_ao_santissimo=0, tercos=0, exame_de_consciencia=0, leitura_espiritual_meditacao=0, sacrificio=0)
+    data_ramalhete = parse_date(data)
+    if data_ramalhete is None:
+        raise Http404("Data invalida")
+
+    ramalhete, _ = Ramalhete.objects.get_or_create(
+        usuario=request.user,
+        data=data_ramalhete,
+        defaults={
+            'missa_comunhao': 0,
+            'visita_ao_santissimo': 0,
+            'tercos': 0,
+            'exame_de_consciencia': 0,
+            'leitura_espiritual_meditacao': 0,
+            'sacrificio': 0,
+        }
+    )
     return render(request, 'ramalhete.html', {'ramalhete': ramalhete})
 
 @login_required(login_url='entrar')
 def editar_ramalhete(request, data):
+    data_ramalhete = parse_date(data)
+    if data_ramalhete is None:
+        raise Http404("Data invalida")
+
     if request.method == 'POST':
-        ramalhete = Ramalhete.objects.get(usuario=request.user, data=data)
+        ramalhete = Ramalhete.objects.get(usuario=request.user, data=data_ramalhete)
         missa_comunhao = int(request.POST.get('missa_comunhao', 0))
         visita_ao_santissimo = int(request.POST.get('visita_ao_santissimo', 0))
+        tercos = int(request.POST.get('tercos', 0))
         exame_de_consciencia = int(request.POST.get('exame_de_consciencia', 0))
         leitura_espiritual_meditacao = int(request.POST.get('leitura_espiritual_meditacao', 0))
         sacrificio = int(request.POST.get('sacrificio', 0))
-        ramalhete.editar_ramalhete(missa_comunhao, visita_ao_santissimo, exame_de_consciencia, leitura_espiritual_meditacao, sacrificio)
+        ramalhete.editar_ramalhete(missa_comunhao, visita_ao_santissimo, tercos, exame_de_consciencia, leitura_espiritual_meditacao, sacrificio)
         return redirect('abrir_ramalhate', data=data)
     else:
-        ramalhete = Ramalhete.objects.get(usuario=request.user, data=data)
-        return render(request, 'editar_ramalhete.html', {'ramalhete': ramalhete})
+        ramalhete = Ramalhete.objects.get(usuario=request.user, data=data_ramalhete)
+        return render(request, 'ramalhete.html', {'ramalhete': ramalhete})

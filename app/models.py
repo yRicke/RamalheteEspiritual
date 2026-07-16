@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Ramalhete(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    data = models.DateTimeField(auto_now_add=True)
+    data = models.DateField()
     missa_comunhao = models.IntegerField()
     visita_ao_santissimo = models.IntegerField()
     tercos = models.IntegerField()
@@ -12,14 +12,21 @@ class Ramalhete(models.Model):
     leitura_espiritual_meditacao = models.IntegerField()
     sacrificio = models.IntegerField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['usuario', 'data'], name='unique_ramalhete_por_usuario_data')
+        ]
+
     def __str__(self):
-        return f"Ramalhete de {self.usuario.username} em {self.data.strftime('%d/%m/%Y %H:%M:%S')}"
+        return f"Ramalhete de {self.usuario.username} em {self.data.strftime('%d/%m/%Y')}"
         
-    def editar_ramalhete(self, missa_comunhao=None, visita_ao_santissimo=None, exame_de_consciencia=None, leitura_espiritual_meditacao=None, sacrificio=None):
+    def editar_ramalhete(self, missa_comunhao=None, visita_ao_santissimo=None, tercos=None, exame_de_consciencia=None, leitura_espiritual_meditacao=None, sacrificio=None):
         if missa_comunhao is not None:
             self.missa_comunhao = missa_comunhao
         if visita_ao_santissimo is not None:
             self.visita_ao_santissimo = visita_ao_santissimo
+        if tercos is not None:
+            self.tercos = tercos
         if exame_de_consciencia is not None:
             self.exame_de_consciencia = exame_de_consciencia
         if leitura_espiritual_meditacao is not None:
