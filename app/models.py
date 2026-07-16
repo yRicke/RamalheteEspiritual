@@ -56,15 +56,5 @@ class Ramalhete(models.Model):
     def get_total_sacrificios_por_usuario_mes_ano(cls, usuario, mes, ano):
         return cls.objects.filter(usuario=usuario, data__month=mes, data__year=ano).aggregate(total=models.Sum('sacrificio'))['total'] or 0
     
-    @classmethod
-    def get_total_geral_por_usuario_mes_ano(cls, usuario, mes, ano):
-        return {"missa_comunhao": cls.get_total_missas_comunhao_por_usuario_mes_ano(usuario, mes, ano),
-                "visita_ao_santissimo": cls.get_total_visitas_ao_santissimo_por_usuario_mes_ano(usuario, mes, ano),
-                "tercos": cls.get_total_tercos_por_usuario_mes_ano(usuario, mes, ano),
-                "exame_de_consciencia": cls.get_total_exames_de_consciencia_por_usuario_mes_ano(usuario, mes, ano),
-                "leitura_espiritual_meditacao": cls.get_total_leituras_espirituais_por_usuario_mes_ano(usuario, mes, ano),
-                "sacrificio": cls.get_total_sacrificios_por_usuario_mes_ano(usuario, mes, ano)
-                }
-    
 
     
