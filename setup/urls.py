@@ -25,5 +25,6 @@ urlpatterns = [
     path('registrar/', views.registrar, name='registrar'),
     path('sair/', views.sair, name='sair'),
     path('ramalhete/<str:data>/', views.abrir_ramalhate, name='abrir_ramalhate'),
+    path('resumo/<int:ano>/<int:mes>/', views.resumo_mensal, name='resumo_mensal'),
     path('ramalhete/<str:data>/editar/', views.editar_ramalhete, name='editar_ramalhete'),
 ]

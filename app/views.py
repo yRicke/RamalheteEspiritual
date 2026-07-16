@@ -76,6 +76,20 @@ def abrir_ramalhate(request, data):
     return render(request, 'ramalhete.html', {'ramalhete': ramalhete})
 
 @login_required(login_url='entrar')
+def resumo_mensal(request, ano, mes):
+    if not 1900 <= ano <= 2200 or not 1 <= mes <= 12:
+        raise Http404("Periodo invalido")
+
+    return JsonResponse({
+        'missa_comunhao': Ramalhete.get_total_missas_comunhao_por_usuario_mes_ano(request.user, mes, ano),
+        'visita_ao_santissimo': Ramalhete.get_total_visitas_ao_santissimo_por_usuario_mes_ano(request.user, mes, ano),
+        'tercos': Ramalhete.get_total_tercos_por_usuario_mes_ano(request.user, mes, ano),
+        'exame_de_consciencia': Ramalhete.get_total_exames_de_consciencia_por_usuario_mes_ano(request.user, mes, ano),
+        'leitura_espiritual_meditacao': Ramalhete.get_total_leituras_espirituais_por_usuario_mes_ano(request.user, mes, ano),
+        'sacrificio': Ramalhete.get_total_sacrificios_por_usuario_mes_ano(request.user, mes, ano),
+    })
+
+@login_required(login_url='entrar')
 def editar_ramalhete(request, data):
     data_ramalhete = parse_date(data)
     if data_ramalhete is None:

@@ -24,15 +24,19 @@ const panel = document.getElementById('calendarPanel');
 const title = document.getElementById('calendarTitle');
 const calendarBody = document.getElementById('calendarBody');
 const grid = document.getElementById('calendarGrid');
+const summaryPeriod = document.getElementById('summaryPeriod');
+const summaryValues = document.querySelectorAll('[data-summary-field]');
 
 if (calendarConfig && previousYearButton && nextYearButton && previousMonthButton && nextMonthButton && yearDisplay && monthDisplay && panel && title && calendarBody && grid) {
     const ramalheteUrlTemplate = calendarConfig.dataset.ramalheteUrl;
+    const summaryUrlTemplate = calendarConfig.dataset.summaryUrl;
     const calendarStatus = JSON.parse(calendarConfig.dataset.status);
     const minimumYear = 1900;
     const maximumYear = 2200;
     const now = new Date();
     let currentYear = now.getFullYear();
     let currentMonth = now.getMonth() + 1;
+    let latestSummaryRequest = 0;
 
     function pad(value) {
         return String(value).padStart(2, '0');
@@ -60,6 +64,39 @@ if (calendarConfig && previousYearButton && nextYearButton && previousMonthButto
         calendarBody.classList.remove('slide-left', 'slide-right');
         void calendarBody.offsetWidth;
         calendarBody.classList.add(direction === 'previous' ? 'slide-left' : 'slide-right');
+    }
+
+    async function updateMonthlySummary() {
+        if (!summaryUrlTemplate || !summaryPeriod || !summaryValues.length) {
+            return;
+        }
+
+        const requestNumber = latestSummaryRequest + 1;
+        latestSummaryRequest = requestNumber;
+        summaryPeriod.textContent = `Carregando ${monthNames[currentMonth - 1]} de ${currentYear}...`;
+
+        try {
+            const url = summaryUrlTemplate.replace('0/0', `${currentYear}/${currentMonth}`);
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error('Falha ao carregar o resumo.');
+            }
+
+            const totals = await response.json();
+            if (requestNumber !== latestSummaryRequest) {
+                return;
+            }
+
+            summaryValues.forEach((element) => {
+                element.textContent = Number(totals[element.dataset.summaryField] || 0).toLocaleString('pt-BR');
+            });
+            summaryPeriod.textContent = `${monthNames[currentMonth - 1]} de ${currentYear}`;
+        } catch (error) {
+            if (requestNumber === latestSummaryRequest) {
+                summaryPeriod.textContent = 'Nao foi possivel carregar os totais.';
+            }
+        }
     }
 
     function renderCalendar(direction) {
@@ -96,6 +133,7 @@ if (calendarConfig && previousYearButton && nextYearButton && previousMonthButto
 
         panel.hidden = false;
         animateCalendar(direction);
+        updateMonthlySummary();
     }
 
     function changeYear(offset) {

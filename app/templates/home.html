@@ -66,10 +66,56 @@
     </div>
 </section>
 
+<section class="monthly-summary" aria-labelledby="monthlySummaryTitle">
+    <div class="summary-header">
+        <div>
+            <p class="auth-kicker">Resumo mensal</p>
+            <h2 class="calendar-title" id="monthlySummaryTitle">Suas ofertas no mes</h2>
+        </div>
+        {% if user.is_authenticated %}
+            <p class="section-copy" id="summaryPeriod" aria-live="polite"></p>
+        {% else %}
+            <a class="button secondary" href="{% url 'entrar' %}">Entrar para ver totais</a>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+        <div class="summary-grid">
+            <article class="summary-card">
+                <span>Missa e comunhao</span>
+                <strong data-summary-field="missa_comunhao">0</strong>
+            </article>
+            <article class="summary-card">
+                <span>Visita ao Santissimo</span>
+                <strong data-summary-field="visita_ao_santissimo">0</strong>
+            </article>
+            <article class="summary-card">
+                <span>Tercos</span>
+                <strong data-summary-field="tercos">0</strong>
+            </article>
+            <article class="summary-card">
+                <span>Exame de consciencia</span>
+                <strong data-summary-field="exame_de_consciencia">0</strong>
+            </article>
+            <article class="summary-card">
+                <span>Leitura espiritual e meditacao</span>
+                <strong data-summary-field="leitura_espiritual_meditacao">0</strong>
+            </article>
+            <article class="summary-card">
+                <span>Sacrificio</span>
+                <strong data-summary-field="sacrificio">0</strong>
+            </article>
+        </div>
+    {% endif %}
+</section>
+
 <div
     id="calendarConfig"
     data-ramalhete-url="{% url 'abrir_ramalhate' '0000-00-00' %}"
     data-status="{{ status_por_data }}"
+    {% if user.is_authenticated %}
+        data-summary-url="{% url 'resumo_mensal' 0 0 %}"
+    {% endif %}
     hidden
 ></div>
 {% endblock %}
