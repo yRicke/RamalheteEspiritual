@@ -615,6 +615,19 @@ textarea {
 
 @media (max-width: 480px) {
     .summary-grid {
-        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .summary-card {
+        min-height: 108px;
+        padding: 14px;
+    }
+
+    .summary-card span {
+        font-size: 0.78rem;
+    }
+
+    .summary-card strong {
+        font-size: 1.7rem;
     }
 }
