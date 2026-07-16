@@ -393,8 +393,24 @@ textarea {
     margin-bottom: 26px;
 }
 
+.back-button {
+    margin-bottom: 16px;
+}
+
 .ramalhete-form {
     padding: 24px;
+}
+
+.save-status {
+    min-height: 24px;
+    margin: 20px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.save-status.error {
+    color: var(--wine);
+    font-weight: 700;
 }
 
 .form-grid {

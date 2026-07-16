@@ -1,6 +1,6 @@
 import json
 
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -81,16 +81,31 @@ def editar_ramalhete(request, data):
     if data_ramalhete is None:
         raise Http404("Data invalida")
 
-    if request.method == 'POST':
-        ramalhete = Ramalhete.objects.get(usuario=request.user, data=data_ramalhete)
-        missa_comunhao = int(request.POST.get('missa_comunhao', 0))
-        visita_ao_santissimo = int(request.POST.get('visita_ao_santissimo', 0))
-        tercos = int(request.POST.get('tercos', 0))
-        exame_de_consciencia = int(request.POST.get('exame_de_consciencia', 0))
-        leitura_espiritual_meditacao = int(request.POST.get('leitura_espiritual_meditacao', 0))
-        sacrificio = int(request.POST.get('sacrificio', 0))
-        ramalhete.editar_ramalhete(missa_comunhao, visita_ao_santissimo, tercos, exame_de_consciencia, leitura_espiritual_meditacao, sacrificio)
-        return redirect('abrir_ramalhate', data=data)
-    else:
-        ramalhete = Ramalhete.objects.get(usuario=request.user, data=data_ramalhete)
-        return render(request, 'ramalhete.html', {'ramalhete': ramalhete})
+    if request.method != 'POST':
+        return JsonResponse({'erro': 'Metodo nao permitido.'}, status=405)
+
+    campos_editaveis = {
+        'missa_comunhao',
+        'visita_ao_santissimo',
+        'tercos',
+        'exame_de_consciencia',
+        'leitura_espiritual_meditacao',
+        'sacrificio',
+    }
+    campo = request.POST.get('campo')
+
+    if campo not in campos_editaveis:
+        return JsonResponse({'erro': 'Campo invalido.'}, status=400)
+
+    try:
+        valor = int(request.POST.get('valor', 0))
+    except (TypeError, ValueError):
+        return JsonResponse({'erro': 'Valor invalido.'}, status=400)
+
+    if valor < 0:
+        return JsonResponse({'erro': 'O valor nao pode ser negativo.'}, status=400)
+
+    ramalhete = Ramalhete.objects.get(usuario=request.user, data=data_ramalhete)
+    setattr(ramalhete, campo, valor)
+    ramalhete.save(update_fields=[campo])
+    return JsonResponse({'campo': campo, 'valor': valor})

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Ramalhete | Ramalhete Espiritual{% endblock %}
 
@@ -9,13 +10,18 @@
             <p class="auth-kicker">Edicao do ramalhete</p>
             <h1 class="section-heading">Ramalhete de {{ ramalhete.data|date:"d/m/Y" }}</h1>
             <p class="section-copy">
-                Preencha os campos do dia e salve para atualizar suas ofertas deste periodo.
+                As alteracoes sao salvas automaticamente.
             </p>
         </div>
-        <a class="button secondary" href="{% url 'home' %}">Voltar ao calendario</a>
     </div>
 
-    <form class="panel ramalhete-form" method="post" action="{% url 'editar_ramalhete' ramalhete.data|date:'Y-m-d' %}">
+    <a class="button secondary back-button" href="{% url 'home' %}">Voltar</a>
+
+    <form
+        id="ramalheteForm"
+        class="panel ramalhete-form"
+        data-save-url="{% url 'editar_ramalhete' ramalhete.data|date:'Y-m-d' %}"
+    >
         {% csrf_token %}
         <div class="form-grid">
             <div class="field">
@@ -49,10 +55,11 @@
             </div>
         </div>
 
-        <div class="form-actions">
-            <a class="button secondary" href="{% url 'home' %}">Cancelar</a>
-            <button class="button" type="submit">Salvar ramalhete</button>
-        </div>
+        <p class="save-status" id="saveStatus" aria-live="polite">Alteracoes salvas automaticamente.</p>
     </form>
 </section>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'app/js/ramalhete.js' %}" defer></script>
 {% endblock %}
