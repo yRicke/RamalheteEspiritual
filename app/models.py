@@ -65,5 +65,6 @@ class Ramalhete(models.Model):
                 "leitura_espiritual_meditacao": cls.get_total_leituras_espirituais_por_usuario_mes_ano(usuario, mes, ano),
                 "sacrificio": cls.get_total_sacrificios_por_usuario_mes_ano(usuario, mes, ano)
                 }
+    
 
     
