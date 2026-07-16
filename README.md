@@ -23,16 +23,22 @@ DJANGO_DEBUG=False
 DJANGO_SECRET_KEY=<segredo aleatorio>
 DJANGO_ALLOWED_HOSTS=.vercel.app
 DATABASE_URL=<conexao PostgreSQL>
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=<senha inicial>
 ```
 
-Depois de provisionar o banco e configurar as variaveis:
+Depois de provisionar o banco e configurar as variaveis, execute as migracoes:
 
 ```bash
 python manage.py migrate
+```
+
+Para criar ou atualizar o administrador, defina as credenciais apenas no
+processo que executara o bootstrap:
+
+```powershell
+$env:ADMIN_USERNAME="admin"
+$env:ADMIN_PASSWORD="<senha inicial>"
 python manage.py bootstrap_admin
 ```
 
-As migracoes e o bootstrap do administrador devem ser executados com as
-variaveis de producao carregadas no ambiente.
+Nao mantenha `ADMIN_USERNAME` e `ADMIN_PASSWORD` nas variaveis do deployment
+depois do bootstrap. O aplicativo usa o usuario salvo no banco de dados.
