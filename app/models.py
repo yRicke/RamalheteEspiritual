@@ -39,3 +39,9 @@ class Ramalhete(models.Model):
             return True
         except Ramalhete.DoesNotExist:
             return False
+        
+    def buscar_ramalhete_por_usuario(self, usuario):
+        return Ramalhete.objects.filter(usuario=usuario).order_by('-data')
+    
+    def get_total_ramalhetes_por_mes_ano(self, usuario, mes, ano):
+        return Ramalhete.objects.filter(usuario=usuario, data__month=mes, data__year=ano).count()
