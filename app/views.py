@@ -1,3 +1,5 @@
+import json
+
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -26,7 +28,7 @@ def home(request):
             possui_pratica_registrada = any(ramalhete[campo] != 0 for campo in campos_de_praticas)
             status_por_data[data] = 'complete' if possui_pratica_registrada else 'pending'
 
-    return render(request, 'home.html', {'status_por_data': status_por_data})
+    return render(request, 'home.html', {'status_por_data': json.dumps(status_por_data)})
 
 def entrar(request):
     if request.method == 'POST':
