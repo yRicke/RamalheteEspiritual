@@ -220,7 +220,11 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg);
+    background-color: #f7f0df;
+    background-image: url("../images/login-floral-sacred-heart.webp");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     padding: 56px max(32px, calc((100vw - 1120px) / 2));
 }
 
@@ -237,8 +241,9 @@ textarea {
     padding: 30px;
     border: 1px solid rgba(180, 135, 53, 0.42);
     border-radius: 8px;
-    background: var(--surface);
-    box-shadow: var(--shadow);
+    background: rgba(255, 254, 250, 0.75);
+    box-shadow: 0 20px 48px rgba(83, 57, 27, 0.16);
+    backdrop-filter: blur(6px);
 }
 
 .auth-brand {
