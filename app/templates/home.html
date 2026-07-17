@@ -6,10 +6,13 @@
 {% block content %}
 <section>
     <p class="auth-kicker">Home</p>
-    <h1 class="section-heading">Seu calendario espiritual.</h1>
-    <p class="section-copy">
-        Navegue pelos meses e clique em um dia para abrir o ramalhete correspondente.
-    </p>
+    <h1 class="section-heading">Ola, {{ user.first_name|default:user.username }}! Esse e seu calendario espiritual.</h1>
+
+    <section class="psalm-band" aria-labelledby="psalmTitle">
+        <p class="auth-kicker" id="psalmTitle">Salmo para hoje</p>
+        <blockquote>{{ salmo.texto }}</blockquote>
+        <cite>{{ salmo.referencia }}</cite>
+    </section>
 
     <div class="panel calendar-toolbar" aria-label="Navegacao do calendario">
         <div class="period-control">
@@ -40,6 +43,7 @@
                         <span><i class="status-dot complete"></i>Preenchido</span>
                         <span><i class="status-dot pending"></i>Em branco</span>
                         <span><i class="status-dot empty"></i>Sem ramalhete</span>
+                        <span><i class="status-dot today"></i>Hoje</span>
                     </div>
                 {% endif %}
             </div>
@@ -113,6 +117,7 @@
     id="calendarConfig"
     data-ramalhete-url="{% url 'abrir_ramalhate' '0000-00-00' %}"
     data-status="{{ status_por_data }}"
+    data-today="{{ data_atual }}"
     {% if user.is_authenticated %}
         data-summary-url="{% url 'resumo_mensal' 0 0 %}"
     {% endif %}

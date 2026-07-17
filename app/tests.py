@@ -1,8 +1,9 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from .models import Ramalhete
 
@@ -48,6 +49,33 @@ class AdminDashboardTests(TestCase):
         self.assertTemplateUsed(response, 'home.html')
         self.assertContains(response, 'id="calendarPanel"')
         self.assertNotContains(response, 'Usuarios cadastrados')
+
+    def test_regular_user_sees_greeting_psalm_and_today_legend(self):
+        self.usuario.first_name = 'Fulano'
+        self.usuario.save(update_fields=['first_name'])
+        self.client.force_login(self.usuario)
+
+        response = self.client.get(reverse('home'))
+
+        self.assertContains(response, 'Ola, Fulano! Esse e seu calendario espiritual.')
+        self.assertContains(response, 'Salmo para hoje')
+        self.assertContains(response, 'Hoje')
+        self.assertContains(response, f'data-today="{timezone.localdate().isoformat()}"')
+
+    def test_user_cannot_open_or_edit_future_ramalhete(self):
+        self.client.force_login(self.usuario)
+        future_date = timezone.localdate() + timedelta(days=1)
+        future_date_string = future_date.isoformat()
+
+        open_response = self.client.get(reverse('abrir_ramalhate', args=[future_date_string]))
+        edit_response = self.client.post(
+            reverse('editar_ramalhete', args=[future_date_string]),
+            {'campo': 'missa_comunhao', 'valor': '1'},
+        )
+
+        self.assertEqual(open_response.status_code, 404)
+        self.assertEqual(edit_response.status_code, 404)
+        self.assertFalse(Ramalhete.objects.filter(usuario=self.usuario, data=future_date).exists())
 
     def test_admin_summary_adds_all_regular_users_and_ignores_superusers(self):
         outro_usuario = User.objects.create_user(

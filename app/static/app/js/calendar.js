@@ -31,6 +31,7 @@ if (calendarConfig && previousYearButton && nextYearButton && previousMonthButto
     const ramalheteUrlTemplate = calendarConfig.dataset.ramalheteUrl;
     const summaryUrlTemplate = calendarConfig.dataset.summaryUrl;
     const calendarStatus = JSON.parse(calendarConfig.dataset.status);
+    const todayKey = calendarConfig.dataset.today;
     const minimumYear = 1900;
     const maximumYear = 2200;
     const now = new Date();
@@ -44,6 +45,11 @@ if (calendarConfig && previousYearButton && nextYearButton && previousMonthButto
 
     function openRamalhete(year, month, day) {
         const date = `${year}-${pad(month)}-${pad(day)}`;
+
+        if (date > todayKey) {
+            return;
+        }
+
         window.location.href = ramalheteUrlTemplate.replace('0000-00-00', date);
     }
 
@@ -104,7 +110,7 @@ if (calendarConfig && previousYearButton && nextYearButton && previousMonthButto
         const month = currentMonth;
         const firstDay = new Date(year, month - 1, 1).getDay();
         const daysInMonth = new Date(year, month, 0).getDate();
-        const today = new Date();
+        const today = new Date(`${todayKey}T00:00:00`);
 
         title.textContent = `${monthNames[month - 1]} de ${year}`;
         updateControls();
@@ -120,14 +126,20 @@ if (calendarConfig && previousYearButton && nextYearButton && previousMonthButto
             const button = document.createElement('button');
             const date = `${year}-${pad(month)}-${pad(day)}`;
             const ramalheteStatus = calendarStatus[date] || '';
+            const isFuture = date > todayKey;
             const isToday = today.getFullYear() === Number(year) &&
                 today.getMonth() === month - 1 &&
                 today.getDate() === day;
 
             button.type = 'button';
-            button.className = `day-cell${ramalheteStatus ? ` ${ramalheteStatus}` : ''}${isToday ? ' today' : ''}`;
-            button.innerHTML = `<span class="day-number">${day}</span><span class="day-hint">${ramalheteStatus === 'complete' ? 'Preenchido' : ramalheteStatus === 'pending' ? 'Em branco' : 'Sem ramalhete'}</span>`;
-            button.addEventListener('click', () => openRamalhete(year, month, day));
+            button.disabled = isFuture;
+            button.className = `day-cell${ramalheteStatus ? ` ${ramalheteStatus}` : ''}${isToday ? ' today' : ''}${isFuture ? ' future' : ''}`;
+            button.innerHTML = `<span class="day-number">${day}</span><span class="day-hint">${isFuture ? 'Indisponivel' : ramalheteStatus === 'complete' ? 'Preenchido' : ramalheteStatus === 'pending' ? 'Em branco' : 'Sem ramalhete'}</span>`;
+            if (isFuture) {
+                button.title = 'Dias futuros ainda nao podem ser preenchidos';
+            } else {
+                button.addEventListener('click', () => openRamalhete(year, month, day));
+            }
             grid.appendChild(button);
         }
 

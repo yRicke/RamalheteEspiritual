@@ -1,4 +1,5 @@
 import json
+import random
 from functools import wraps
 
 from django.contrib import messages
@@ -10,6 +11,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.db.models import Sum
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.dateparse import parse_date
 
 from .models import Ramalhete
@@ -22,6 +24,29 @@ PRACTICE_FIELDS = (
     'exame_de_consciencia',
     'leitura_espiritual_meditacao',
     'sacrificio',
+)
+
+PSALMOS = (
+    {
+        'texto': 'O Senhor e meu pastor; nada me faltara.',
+        'referencia': 'Salmo 23:1',
+    },
+    {
+        'texto': 'Este e o dia que o Senhor fez; alegremo-nos e exultemos nele.',
+        'referencia': 'Salmo 118:24',
+    },
+    {
+        'texto': 'A tua palavra e lampada para os meus pes e luz para o meu caminho.',
+        'referencia': 'Salmo 119:105',
+    },
+    {
+        'texto': 'Em paz me deito e logo adormeco, pois so tu, Senhor, me fazes viver em seguranca.',
+        'referencia': 'Salmo 4:8',
+    },
+    {
+        'texto': 'O Senhor e a minha luz e a minha salvacao; de quem terei medo?',
+        'referencia': 'Salmo 27:1',
+    },
 )
 
 
@@ -45,7 +70,7 @@ def get_totals(queryset):
         for field in PRACTICE_FIELDS
     }
 
-
+@login_required(login_url='entrar')
 def home(request):
     if request.user.is_superuser:
         usuarios = User.objects.filter(is_superuser=False).order_by('username')
@@ -60,7 +85,11 @@ def home(request):
             possui_pratica_registrada = any(ramalhete[campo] != 0 for campo in PRACTICE_FIELDS)
             status_por_data[data] = 'complete' if possui_pratica_registrada else 'pending'
 
-    return render(request, 'home.html', {'status_por_data': json.dumps(status_por_data)})
+    return render(request, 'home.html', {
+        'status_por_data': json.dumps(status_por_data),
+        'data_atual': timezone.localdate().isoformat(),
+        'salmo': random.choice(PSALMOS),
+    })
 
 
 def entrar(request):
@@ -85,6 +114,8 @@ def abrir_ramalhate(request, data):
     data_ramalhete = parse_date(data)
     if data_ramalhete is None:
         raise Http404("Data invalida")
+    if data_ramalhete > timezone.localdate():
+        raise Http404("Nao e possivel registrar dias futuros")
 
     ramalhete, _ = Ramalhete.objects.get_or_create(
         usuario=request.user,
@@ -194,6 +225,8 @@ def editar_ramalhete(request, data):
     data_ramalhete = parse_date(data)
     if data_ramalhete is None:
         raise Http404("Data invalida")
+    if data_ramalhete > timezone.localdate():
+        raise Http404("Nao e possivel editar dias futuros")
 
     if request.method != 'POST':
         return JsonResponse({'erro': 'Metodo nao permitido.'}, status=405)
@@ -211,7 +244,7 @@ def editar_ramalhete(request, data):
     if valor < 0:
         return JsonResponse({'erro': 'O valor nao pode ser negativo.'}, status=400)
 
-    ramalhete = Ramalhete.objects.get(usuario=request.user, data=data_ramalhete)
+    ramalhete = get_object_or_404(Ramalhete, usuario=request.user, data=data_ramalhete)
     setattr(ramalhete, campo, valor)
     ramalhete.save(update_fields=[campo])
     return JsonResponse({'campo': campo, 'valor': valor})
