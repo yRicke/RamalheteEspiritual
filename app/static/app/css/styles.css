@@ -1,16 +1,18 @@
 :root {
-    --bg: #f7f7f4;
-    --surface: #ffffff;
-    --surface-soft: #eef3ef;
-    --ink: #202621;
-    --muted: #667066;
-    --line: #dce3dd;
-    --green: #295642;
-    --green-strong: #183b2e;
-    --wine: #7e2936;
-    --gold: #b4842c;
-    --focus: #2f6f54;
-    --shadow: 0 18px 45px rgba(32, 38, 33, 0.08);
+    --bg: #f4f5f0;
+    --surface: #fffefa;
+    --surface-soft: #f2eee5;
+    --ink: #24251f;
+    --muted: #67675f;
+    --line: #ddd6c8;
+    --green: #245344;
+    --green-strong: #143d32;
+    --wine: #7c2431;
+    --wine-strong: #5b1722;
+    --gold: #b48735;
+    --gold-soft: #e6d3a8;
+    --focus: #9a6a1e;
+    --shadow: 0 18px 42px rgba(55, 43, 28, 0.1);
 }
 
 * {
@@ -22,7 +24,7 @@ body {
     min-height: 100vh;
     background: var(--bg);
     color: var(--ink);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
     line-height: 1.5;
 }
 
@@ -46,7 +48,10 @@ textarea {
 
 .site-header {
     border-bottom: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.92);
+    border-top: 3px solid var(--wine);
+    background: rgba(255, 254, 250, 0.96);
+    position: relative;
+    z-index: 10;
 }
 
 .nav {
@@ -62,20 +67,31 @@ textarea {
 .brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
     font-weight: 700;
     color: var(--green-strong);
 }
 
 .brand-mark {
-    width: 38px;
-    height: 38px;
-    border: 1px solid var(--line);
-    display: grid;
-    place-items: center;
-    background: var(--surface-soft);
-    color: var(--gold);
-    font-size: 22px;
+    width: 46px;
+    height: 46px;
+    overflow: hidden;
+    border: 1px solid var(--gold-soft);
+    border-radius: 50%;
+    background: #f5e5bc;
+    box-shadow: 0 3px 10px rgba(91, 23, 34, 0.14);
+}
+
+.brand-mark img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.brand-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.08rem;
 }
 
 .nav-actions {
@@ -98,7 +114,7 @@ textarea {
     padding: 9px 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+    transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
 .nav-link {
@@ -106,19 +122,20 @@ textarea {
 }
 
 .nav-link:hover {
-    color: var(--green-strong);
+    color: var(--wine);
     background: var(--surface-soft);
 }
 
 .button {
-    background: var(--green);
+    background: var(--wine);
     color: #ffffff;
-    border-color: var(--green);
+    border-color: var(--wine);
 }
 
 .button:hover {
-    background: var(--green-strong);
-    border-color: var(--green-strong);
+    background: var(--wine-strong);
+    border-color: var(--wine-strong);
+    transform: translateY(-1px);
 }
 
 .button.secondary {
@@ -128,8 +145,15 @@ textarea {
 }
 
 .button.secondary:hover {
-    border-color: var(--green);
+    border-color: var(--gold);
     background: var(--surface-soft);
+}
+
+.button:focus-visible,
+.nav-link:focus-visible,
+.brand:focus-visible {
+    outline: 3px solid rgba(180, 135, 53, 0.32);
+    outline-offset: 3px;
 }
 
 .main {
@@ -141,7 +165,8 @@ textarea {
 
 .section-heading {
     margin: 0 0 8px;
-    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.75rem;
     line-height: 1.08;
     color: var(--green-strong);
     letter-spacing: 0;
@@ -161,15 +186,68 @@ textarea {
 }
 
 .auth-layout {
-    min-height: calc(100vh - 190px);
-    display: grid;
-    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 440px);
+    min-height: calc(100vh - 139px);
+    display: flex;
     align-items: center;
-    gap: 44px;
+    background-image: url("../images/login-devotional.webp");
+    background-position: center;
+    background-size: cover;
+    padding: 56px max(32px, calc((100vw - 1120px) / 2));
+}
+
+.auth-page .main {
+    width: 100%;
+    padding: 0;
+}
+
+.auth-content {
+    width: min(100%, 430px);
 }
 
 .auth-panel {
     padding: 30px;
+    border: 1px solid rgba(180, 135, 53, 0.42);
+    border-radius: 8px;
+    background: rgba(255, 254, 250, 0.94);
+    box-shadow: 0 24px 65px rgba(62, 39, 20, 0.22);
+    backdrop-filter: blur(8px);
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--gold-soft);
+}
+
+.auth-brand img {
+    width: 76px;
+    height: 76px;
+    flex: 0 0 76px;
+    object-fit: cover;
+    border: 1px solid var(--gold-soft);
+    border-radius: 50%;
+    box-shadow: 0 5px 16px rgba(91, 23, 34, 0.16);
+}
+
+.auth-heading {
+    margin: 0;
+    color: var(--green-strong);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.75rem;
+    line-height: 1.12;
+}
+
+.auth-copy {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.auth-submit {
+    width: 100%;
+    min-height: 46px;
 }
 
 .auth-kicker {
@@ -219,7 +297,7 @@ textarea {
 .field select:focus,
 .field textarea:focus {
     border-color: var(--focus);
-    box-shadow: 0 0 0 3px rgba(47, 111, 84, 0.14);
+    box-shadow: 0 0 0 3px rgba(180, 135, 53, 0.2);
 }
 
 .error-message {
@@ -237,6 +315,7 @@ textarea {
     gap: 14px;
     padding: 22px;
     margin-top: 28px;
+    border-top: 3px solid var(--gold);
 }
 
 .period-control {
@@ -257,7 +336,7 @@ textarea {
     align-items: center;
     border: 1px solid var(--line);
     border-radius: 6px;
-    background: #ffffff;
+    background: var(--surface);
 }
 
 .period-value {
@@ -281,8 +360,8 @@ textarea {
 }
 
 .stepper-button:hover:not(:disabled) {
-    background: var(--surface-soft);
-    color: var(--green);
+    background: #f4e8cf;
+    color: var(--wine);
 }
 
 .stepper-button:focus-visible {
@@ -328,6 +407,14 @@ textarea {
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--surface);
+    border-top: 3px solid var(--gold-soft);
+    transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.summary-card:hover {
+    border-top-color: var(--wine);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(55, 43, 28, 0.08);
 }
 
 .summary-card span {
@@ -337,7 +424,7 @@ textarea {
 }
 
 .summary-card strong {
-    color: var(--green-strong);
+    color: var(--wine);
     font-size: 2rem;
     line-height: 1;
 }
@@ -410,7 +497,7 @@ textarea {
 .checkbox-field input {
     width: 17px;
     height: 17px;
-    accent-color: var(--green);
+    accent-color: var(--wine);
 }
 
 .admin-user-list {
@@ -487,6 +574,7 @@ textarea {
     gap: 16px;
     padding: 22px;
     border-bottom: 1px solid var(--line);
+    background: #fbf7ee;
 }
 
 .calendar-title {
@@ -546,7 +634,7 @@ textarea {
     border: 0;
     border-right: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
-    background: #ffffff;
+    background: var(--surface);
     color: var(--ink);
     padding: 10px;
     text-align: left;
@@ -664,7 +752,7 @@ textarea {
 
 .site-footer {
     border-top: 1px solid var(--line);
-    background: #ffffff;
+    background: var(--surface);
     color: var(--muted);
 }
 
@@ -689,8 +777,18 @@ textarea {
     }
 
     .auth-layout {
-        grid-template-columns: 1fr;
-        gap: 24px;
+        min-height: calc(100vh - 179px);
+        align-items: flex-end;
+        background-position: 63% center;
+        padding: 260px 16px 28px;
+    }
+
+    .auth-content {
+        margin: 0 auto;
+    }
+
+    .section-heading {
+        font-size: 2rem;
     }
 
     .calendar-toolbar,
@@ -724,6 +822,33 @@ textarea {
 }
 
 @media (max-width: 480px) {
+    .nav-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .brand-name {
+        font-size: 1rem;
+    }
+
+    .auth-layout {
+        padding-top: 220px;
+    }
+
+    .auth-panel {
+        padding: 22px;
+    }
+
+    .auth-brand img {
+        width: 62px;
+        height: 62px;
+        flex-basis: 62px;
+    }
+
+    .auth-heading {
+        font-size: 1.45rem;
+    }
+
     .summary-grid {
         gap: 8px;
     }

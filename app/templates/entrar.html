@@ -1,34 +1,43 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Entrar | Ramalhete Espiritual{% endblock %}
+{% block body_class %}auth-page{% endblock %}
 
 {% block content %}
 <section class="auth-layout">
-    <div>
-        <p class="auth-kicker">Autenticacao</p>
-        <h1 class="section-heading">Entre para continuar seu ramalhete.</h1>
-        <p class="section-copy">
-            Acesse sua conta para abrir o calendario, escolher o dia do mes e registrar suas praticas espirituais.
-        </p>
+    <div class="auth-content">
+        <form class="auth-panel form-stack" method="post" action="{% url 'entrar' %}">
+            {% csrf_token %}
+
+            <div class="auth-brand">
+                <img src="{% static 'app/images/brand-sacred-heart.webp' %}" alt="Sagrado Coracao de Jesus" width="640" height="640">
+                <div>
+                    <p class="auth-kicker">Ramalhete Espiritual</p>
+                    <h1 class="auth-heading">Entre em sua conta</h1>
+                </div>
+            </div>
+
+            <p class="auth-copy">
+                Registre com simplicidade suas ofertas e praticas de piedade de cada dia.
+            </p>
+
+            {% if error %}
+                <div class="error-message" role="alert">{{ error }}</div>
+            {% endif %}
+
+            <div class="field">
+                <label for="username">Usuario</label>
+                <input id="username" name="username" type="text" autocomplete="username" autofocus required>
+            </div>
+
+            <div class="field">
+                <label for="password">Senha</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+
+            <button class="button auth-submit" type="submit">Entrar</button>
+        </form>
     </div>
-
-    <form class="panel auth-panel form-stack" method="post" action="{% url 'entrar' %}">
-        {% csrf_token %}
-        {% if error %}
-            <div class="error-message">{{ error }}</div>
-        {% endif %}
-
-        <div class="field">
-            <label for="username">Usuario</label>
-            <input id="username" name="username" type="text" autocomplete="username" required>
-        </div>
-
-        <div class="field">
-            <label for="password">Senha</label>
-            <input id="password" name="password" type="password" autocomplete="current-password" required>
-        </div>
-
-        <button class="button" type="submit">Entrar</button>
-    </form>
 </section>
 {% endblock %}

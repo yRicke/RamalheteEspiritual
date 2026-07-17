@@ -1,8 +1,11 @@
+{% load static %}
 <header class="site-header">
     <nav class="nav" aria-label="Navegacao principal">
         <a class="brand" href="{% url 'home' %}">
-            <span class="brand-mark" aria-hidden="true">R</span>
-            <span>Ramalhete Espiritual</span>
+            <span class="brand-mark" aria-hidden="true">
+                <img src="{% static 'app/images/brand-sacred-heart.webp' %}" alt="" width="640" height="640">
+            </span>
+            <span class="brand-name">Ramalhete Espiritual</span>
         </a>
 
         <div class="nav-actions">
