@@ -149,6 +149,16 @@ textarea {
     background: var(--surface-soft);
 }
 
+.button.danger {
+    background: #7e2936;
+    border-color: #7e2936;
+}
+
+.button.danger:hover {
+    background: #5f1e28;
+    border-color: #5f1e28;
+}
+
 .button:focus-visible,
 .nav-link:focus-visible,
 .brand:focus-visible {
@@ -542,7 +552,7 @@ textarea {
 
 .admin-user-form {
     display: grid;
-    grid-template-columns: minmax(150px, 1fr) minmax(180px, 1fr) auto auto;
+    grid-template-columns: minmax(150px, 1fr) minmax(180px, 1fr) auto auto auto;
     gap: 14px;
     align-items: end;
     padding: 18px;

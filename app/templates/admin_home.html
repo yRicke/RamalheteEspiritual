@@ -98,7 +98,7 @@
 
             <div class="field">
                 <label for="newPassword">Senha inicial</label>
-                <input id="newPassword" name="password" type="password" autocomplete="new-password" required>
+                <input id="newPassword" name="password" type="password" autocomplete="new-password">
             </div>
 
             <label class="checkbox-field">
@@ -136,6 +136,14 @@
                     </div>
 
                     <button class="button secondary" type="submit">Salvar</button>
+                    <button
+                        class="button danger"
+                        type="submit"
+                        name="action"
+                        value="delete"
+                        formnovalidate
+                        onclick="return confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.');"
+                    >Excluir</button>
                 </form>
             {% empty %}
                 <p class="empty-state">Nenhum usuário cadastrado.</p>

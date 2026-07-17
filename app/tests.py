@@ -135,16 +135,26 @@ class AdminDashboardTests(TestCase):
         response = self.client.post(
             reverse('criar_usuario'),
             {
-                'username': 'novo_usuario',
-                'password': 'NovaContaSegura!2468',
+                'username': 'Henrique',
             },
         )
 
         self.assertRedirects(response, reverse('home'))
-        usuario = User.objects.get(username='novo_usuario')
-        self.assertTrue(usuario.check_password('NovaContaSegura!2468'))
+        usuario = User.objects.get(username='Henrique')
+        self.assertTrue(usuario.check_password('SenhaHenrique123'))
         self.assertFalse(usuario.is_staff)
         self.assertFalse(usuario.is_superuser)
+
+    def test_superuser_can_delete_regular_user(self):
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse('editar_usuario', args=[self.usuario.id]),
+            {'action': 'delete'},
+        )
+
+        self.assertRedirects(response, reverse('home'))
+        self.assertFalse(User.objects.filter(id=self.usuario.id).exists())
 
     def test_superuser_can_rename_deactivate_and_reset_password(self):
         self.client.force_login(self.admin)

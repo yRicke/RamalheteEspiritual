@@ -164,10 +164,10 @@ def criar_usuario(request):
         return redirect('home')
 
     username = request.POST.get('username', '').strip()
-    password = request.POST.get('password', '')
+    password = request.POST.get('password', '') or f'Senha{username}123'
 
-    if not username or not password:
-        messages.error(request, 'Informe o nome de usuário e a senha.')
+    if not username:
+        messages.error(request, 'Informe o nome de usuário.')
         return redirect('home')
 
     if User.objects.filter(username__iexact=username).exists():
@@ -193,6 +193,13 @@ def editar_usuario(request, usuario_id):
         return redirect('home')
 
     usuario = get_object_or_404(User, id=usuario_id, is_superuser=False)
+
+    if request.POST.get('action') == 'delete':
+        username = usuario.username
+        usuario.delete()
+        messages.success(request, f'Usuário {username} excluído com sucesso.')
+        return redirect('home')
+
     username = request.POST.get('username', '').strip()
     password = request.POST.get('password', '')
     is_active = request.POST.get('is_active') == 'on'

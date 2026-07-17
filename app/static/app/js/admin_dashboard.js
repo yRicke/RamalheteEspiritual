@@ -119,3 +119,23 @@ document.querySelectorAll('[data-password-toggle]').forEach((toggle) => {
         }
     });
 });
+
+const newUsernameInput = document.getElementById('newUsername');
+const newPasswordInput = document.getElementById('newPassword');
+
+if (newUsernameInput && newPasswordInput) {
+    let passwordWasChanged = false;
+
+    const updateInitialPassword = () => {
+        if (!passwordWasChanged) {
+            newPasswordInput.value = newUsernameInput.value.trim()
+                ? `Senha${newUsernameInput.value.trim()}123`
+                : '';
+        }
+    };
+
+    newUsernameInput.addEventListener('input', updateInitialPassword);
+    newPasswordInput.addEventListener('input', () => {
+        passwordWasChanged = true;
+    });
+}
