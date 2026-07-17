@@ -189,11 +189,8 @@ textarea {
     min-height: calc(100vh - 139px);
     display: flex;
     align-items: center;
-    background-color: #ead29d;
-    background-image: url("../images/login-devotional.webp");
-    background-position: right center;
-    background-repeat: no-repeat;
-    background-size: auto 100%;
+    justify-content: center;
+    background: var(--bg);
     padding: 56px max(32px, calc((100vw - 1120px) / 2));
 }
 
@@ -210,9 +207,8 @@ textarea {
     padding: 30px;
     border: 1px solid rgba(180, 135, 53, 0.42);
     border-radius: 8px;
-    background: rgba(255, 254, 250, 0.25);
-    box-shadow: 0 24px 65px rgba(62, 39, 20, 0.22);
-    backdrop-filter: blur(8px);
+    background: var(--surface);
+    box-shadow: var(--shadow);
 }
 
 .auth-brand {
@@ -783,15 +779,8 @@ textarea {
 
     .auth-layout {
         min-height: calc(100vh - 179px);
-        align-items: flex-end;
-        background-color: #ead29d;
-        background-image:
-            url("../images/login-devotional-portrait.webp"),
-            url("../images/login-devotional-portrait.webp");
-        background-position: center top, center top;
-        background-repeat: no-repeat, no-repeat;
-        background-size: auto 115%, cover;
-        padding: 260px 16px 28px;
+        align-items: center;
+        padding: 40px 16px;
     }
 
     .auth-content {
@@ -843,7 +832,7 @@ textarea {
     }
 
     .auth-layout {
-        padding-top: 220px;
+        padding: 28px 16px;
     }
 
     .auth-panel {
