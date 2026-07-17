@@ -28,23 +28,23 @@ PRACTICE_FIELDS = (
 
 PSALMOS = (
     {
-        'texto': 'O Senhor e meu pastor; nada me faltara.',
+        'texto': 'O Senhor é meu pastor; nada me faltará.',
         'referencia': 'Salmo 23:1',
     },
     {
-        'texto': 'Este e o dia que o Senhor fez; alegremo-nos e exultemos nele.',
+        'texto': 'Este é o dia que o Senhor fez; alegremo-nos e exultemos nele.',
         'referencia': 'Salmo 118:24',
     },
     {
-        'texto': 'A tua palavra e lampada para os meus pes e luz para o meu caminho.',
+        'texto': 'A tua palavra é lâmpada para os meus pés e luz para o meu caminho.',
         'referencia': 'Salmo 119:105',
     },
     {
-        'texto': 'Em paz me deito e logo adormeco, pois so tu, Senhor, me fazes viver em seguranca.',
+        'texto': 'Em paz me deito e logo adormeço, pois só tu, Senhor, me fazes viver em segurança.',
         'referencia': 'Salmo 4:8',
     },
     {
-        'texto': 'O Senhor e a minha luz e a minha salvacao; de quem terei medo?',
+        'texto': 'O Senhor é a minha luz e a minha salvação; de quem terei medo?',
         'referencia': 'Salmo 27:1',
     },
 )
@@ -100,7 +100,7 @@ def entrar(request):
         if user is not None:
             login(request, user)
             return redirect('home')
-        return render(request, 'entrar.html', {'error': 'Credenciais invalidas'})
+        return render(request, 'entrar.html', {'error': 'Credenciais inválidas'})
     return render(request, 'entrar.html')
 
 
@@ -113,9 +113,9 @@ def sair(request):
 def abrir_ramalhate(request, data):
     data_ramalhete = parse_date(data)
     if data_ramalhete is None:
-        raise Http404("Data invalida")
+        raise Http404("Data inválida")
     if data_ramalhete > timezone.localdate():
-        raise Http404("Nao e possivel registrar dias futuros")
+        raise Http404("Não é possível registrar dias futuros")
 
     ramalhete, _ = Ramalhete.objects.get_or_create(
         usuario=request.user,
@@ -135,7 +135,7 @@ def abrir_ramalhate(request, data):
 @login_required(login_url='entrar')
 def resumo_mensal(request, ano, mes):
     if not 1900 <= ano <= 2200 or not 1 <= mes <= 12:
-        raise Http404("Periodo invalido")
+        raise Http404("Período inválido")
 
     ramalhetes = Ramalhete.objects.filter(
         usuario=request.user,
@@ -148,7 +148,7 @@ def resumo_mensal(request, ano, mes):
 @superuser_required
 def resumo_admin_mensal(request, ano, mes):
     if not 1900 <= ano <= 2200 or not 1 <= mes <= 12:
-        raise Http404("Periodo invalido")
+        raise Http404("Período inválido")
 
     ramalhetes = Ramalhete.objects.filter(
         usuario__is_superuser=False,
@@ -167,11 +167,11 @@ def criar_usuario(request):
     password = request.POST.get('password', '')
 
     if not username or not password:
-        messages.error(request, 'Informe o nome de usuario e a senha.')
+        messages.error(request, 'Informe o nome de usuário e a senha.')
         return redirect('home')
 
     if User.objects.filter(username__iexact=username).exists():
-        messages.error(request, 'Ja existe um usuario com esse nome.')
+        messages.error(request, 'Já existe um usuário com esse nome.')
         return redirect('home')
 
     usuario = User(username=username)
@@ -183,7 +183,7 @@ def criar_usuario(request):
 
     usuario.set_password(password)
     usuario.save()
-    messages.success(request, f'Usuario {username} criado com sucesso.')
+    messages.success(request, f'Usuário {username} criado com sucesso.')
     return redirect('home')
 
 
@@ -198,11 +198,11 @@ def editar_usuario(request, usuario_id):
     is_active = request.POST.get('is_active') == 'on'
 
     if not username:
-        messages.error(request, 'O nome de usuario nao pode ficar vazio.')
+        messages.error(request, 'O nome de usuário não pode ficar vazio.')
         return redirect('home')
 
     if User.objects.filter(username__iexact=username).exclude(id=usuario.id).exists():
-        messages.error(request, 'Ja existe um usuario com esse nome.')
+        messages.error(request, 'Já existe um usuário com esse nome.')
         return redirect('home')
 
     if password:
@@ -216,7 +216,7 @@ def editar_usuario(request, usuario_id):
     usuario.username = username
     usuario.is_active = is_active
     usuario.save()
-    messages.success(request, f'Usuario {username} atualizado.')
+    messages.success(request, f'Usuário {username} atualizado.')
     return redirect('home')
 
 
@@ -224,25 +224,25 @@ def editar_usuario(request, usuario_id):
 def editar_ramalhete(request, data):
     data_ramalhete = parse_date(data)
     if data_ramalhete is None:
-        raise Http404("Data invalida")
+        raise Http404("Data inválida")
     if data_ramalhete > timezone.localdate():
-        raise Http404("Nao e possivel editar dias futuros")
+        raise Http404("Não é possível editar dias futuros")
 
     if request.method != 'POST':
-        return JsonResponse({'erro': 'Metodo nao permitido.'}, status=405)
+        return JsonResponse({'erro': 'Método não permitido.'}, status=405)
 
     campo = request.POST.get('campo')
 
     if campo not in PRACTICE_FIELDS:
-        return JsonResponse({'erro': 'Campo invalido.'}, status=400)
+        return JsonResponse({'erro': 'Campo inválido.'}, status=400)
 
     try:
         valor = int(request.POST.get('valor', 0))
     except (TypeError, ValueError):
-        return JsonResponse({'erro': 'Valor invalido.'}, status=400)
+        return JsonResponse({'erro': 'Valor inválido.'}, status=400)
 
     if valor < 0:
-        return JsonResponse({'erro': 'O valor nao pode ser negativo.'}, status=400)
+        return JsonResponse({'erro': 'O valor não pode ser negativo.'}, status=400)
 
     ramalhete = get_object_or_404(Ramalhete, usuario=request.user, data=data_ramalhete)
     setattr(ramalhete, campo, valor)

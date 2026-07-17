@@ -5,10 +5,10 @@
 
 {% block content %}
 <section>
-    <p class="auth-kicker">Administracao</p>
+    <p class="auth-kicker">Administração</p>
     <h1 class="section-heading">Painel do Ramalhete Espiritual.</h1>
     <p class="section-copy">
-        Acompanhe os totais de todos os usuarios e gerencie as contas de acesso.
+        Acompanhe os totais de todos os usuários e gerencie as contas de acesso.
     </p>
 
     {% if messages %}
@@ -19,22 +19,22 @@
         </div>
     {% endif %}
 
-    <div class="panel calendar-toolbar" aria-label="Periodo do resumo">
+    <div class="panel calendar-toolbar" aria-label="Período do resumo">
         <div class="period-control">
             <span class="period-label">Ano</span>
             <div class="period-stepper">
                 <button class="stepper-button" id="adminPreviousYear" type="button" aria-label="Ano anterior" title="Ano anterior">&larr;</button>
                 <output class="period-value" id="adminYearDisplay" aria-live="polite"></output>
-                <button class="stepper-button" id="adminNextYear" type="button" aria-label="Proximo ano" title="Proximo ano">&rarr;</button>
+                <button class="stepper-button" id="adminNextYear" type="button" aria-label="Próximo ano" title="Próximo ano">&rarr;</button>
             </div>
         </div>
 
         <div class="period-control">
-            <span class="period-label">Mes</span>
+            <span class="period-label">Mês</span>
             <div class="period-stepper">
-                <button class="stepper-button" id="adminPreviousMonth" type="button" aria-label="Mes anterior" title="Mes anterior">&larr;</button>
+                <button class="stepper-button" id="adminPreviousMonth" type="button" aria-label="Mês anterior" title="Mês anterior">&larr;</button>
                 <output class="period-value" id="adminMonthDisplay" aria-live="polite"></output>
-                <button class="stepper-button" id="adminNextMonth" type="button" aria-label="Proximo mes" title="Proximo mes">&rarr;</button>
+                <button class="stepper-button" id="adminNextMonth" type="button" aria-label="Próximo mês" title="Próximo mês">&rarr;</button>
             </div>
         </div>
     </div>
@@ -44,34 +44,34 @@
     <div class="summary-header">
         <div>
             <p class="auth-kicker">Resumo geral</p>
-            <h2 class="calendar-title" id="adminSummaryTitle">Ofertas de todos os usuarios</h2>
+            <h2 class="calendar-title" id="adminSummaryTitle">Ofertas de todos os usuários</h2>
         </div>
         <p class="section-copy" id="adminSummaryPeriod" aria-live="polite"></p>
     </div>
 
     <div class="summary-grid" id="adminSummaryGrid">
         <article class="summary-card">
-            <span>Missa e comunhao</span>
+            <span>Missa e comunhão</span>
             <strong data-admin-summary-field="missa_comunhao">0</strong>
         </article>
         <article class="summary-card">
-            <span>Visita ao Santissimo</span>
+            <span>Visita ao Santíssimo</span>
             <strong data-admin-summary-field="visita_ao_santissimo">0</strong>
         </article>
         <article class="summary-card">
-            <span>Tercos</span>
+            <span>Terços</span>
             <strong data-admin-summary-field="tercos">0</strong>
         </article>
         <article class="summary-card">
-            <span>Exame de consciencia</span>
+            <span>Exame de consciência</span>
             <strong data-admin-summary-field="exame_de_consciencia">0</strong>
         </article>
         <article class="summary-card">
-            <span>Leitura espiritual e meditacao</span>
+            <span>Leitura espiritual e meditação</span>
             <strong data-admin-summary-field="leitura_espiritual_meditacao">0</strong>
         </article>
         <article class="summary-card">
-            <span>Sacrificio</span>
+            <span>Sacrifício</span>
             <strong data-admin-summary-field="sacrificio">0</strong>
         </article>
     </div>
@@ -81,7 +81,7 @@
     <div class="summary-header">
         <div>
             <p class="auth-kicker">Acessos</p>
-            <h2 class="calendar-title" id="adminUsersTitle">Usuarios cadastrados</h2>
+            <h2 class="calendar-title" id="adminUsersTitle">Usuários cadastrados</h2>
         </div>
         <p class="section-copy">{{ usuarios|length }} conta{{ usuarios|length|pluralize }}</p>
     </div>
@@ -89,10 +89,10 @@
     <div class="admin-users-layout">
         <form class="panel admin-user-create form-stack" method="post" action="{% url 'criar_usuario' %}">
             {% csrf_token %}
-            <h3 class="compact-heading">Novo usuario</h3>
+            <h3 class="compact-heading">Novo usuário</h3>
 
             <div class="field">
-                <label for="newUsername">Nome de usuario</label>
+                <label for="newUsername">Nome de usuário</label>
                 <input id="newUsername" name="username" type="text" autocomplete="off" required>
             </div>
 
@@ -106,7 +106,7 @@
                 <span>Mostrar senha</span>
             </label>
 
-            <button class="button" type="submit">Criar usuario</button>
+            <button class="button" type="submit">Criar usuário</button>
         </form>
 
         <div class="panel admin-user-list">
@@ -115,7 +115,7 @@
                     {% csrf_token %}
 
                     <div class="field">
-                        <label for="username-{{ account.id }}">Nome de usuario</label>
+                        <label for="username-{{ account.id }}">Nome de usuário</label>
                         <input id="username-{{ account.id }}" name="username" type="text" value="{{ account.username }}" required>
                     </div>
 
@@ -138,7 +138,7 @@
                     <button class="button secondary" type="submit">Salvar</button>
                 </form>
             {% empty %}
-                <p class="empty-state">Nenhum usuario cadastrado.</p>
+                <p class="empty-state">Nenhum usuário cadastrado.</p>
             {% endfor %}
         </div>
     </div>

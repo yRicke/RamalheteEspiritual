@@ -1,7 +1,7 @@
 const monthNames = [
     'Janeiro',
     'Fevereiro',
-    'Marco',
+    'Março',
     'Abril',
     'Maio',
     'Junho',
@@ -78,7 +78,7 @@ if (adminConfig && previousYearButton && nextYearButton && previousMonthButton &
             animateSummary(direction);
         } catch (error) {
             if (requestNumber === latestRequest) {
-                summaryPeriod.textContent = 'Nao foi possivel carregar os totais.';
+                summaryPeriod.textContent = 'Não foi possível carregar os totais.';
             }
         }
     }

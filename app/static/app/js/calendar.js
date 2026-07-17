@@ -1,7 +1,7 @@
 const monthNames = [
     'Janeiro',
     'Fevereiro',
-    'Marco',
+    'Março',
     'Abril',
     'Maio',
     'Junho',
@@ -100,7 +100,7 @@ if (calendarConfig && previousYearButton && nextYearButton && previousMonthButto
             summaryPeriod.textContent = `${monthNames[currentMonth - 1]} de ${currentYear}`;
         } catch (error) {
             if (requestNumber === latestSummaryRequest) {
-                summaryPeriod.textContent = 'Nao foi possivel carregar os totais.';
+                summaryPeriod.textContent = 'Não foi possível carregar os totais.';
             }
         }
     }
@@ -134,9 +134,9 @@ if (calendarConfig && previousYearButton && nextYearButton && previousMonthButto
             button.type = 'button';
             button.disabled = isFuture;
             button.className = `day-cell${ramalheteStatus ? ` ${ramalheteStatus}` : ''}${isToday ? ' today' : ''}${isFuture ? ' future' : ''}`;
-            button.innerHTML = `<span class="day-number">${day}</span><span class="day-hint">${isFuture ? 'Indisponivel' : ramalheteStatus === 'complete' ? 'Preenchido' : ramalheteStatus === 'pending' ? 'Em branco' : 'Sem ramalhete'}</span>`;
+            button.innerHTML = `<span class="day-number">${day}</span><span class="day-hint">${isFuture ? 'Indisponível' : ramalheteStatus === 'complete' ? 'Preenchido' : ramalheteStatus === 'pending' ? 'Em branco' : 'Sem ramalhete'}</span>`;
             if (isFuture) {
-                button.title = 'Dias futuros ainda nao podem ser preenchidos';
+                button.title = 'Dias futuros ainda não podem ser preenchidos';
             } else {
                 button.addEventListener('click', () => openRamalhete(year, month, day));
             }

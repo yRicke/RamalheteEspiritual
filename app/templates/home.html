@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Calendario | Ramalhete Espiritual{% endblock %}
+{% block title %}Calendário | Ramalhete Espiritual{% endblock %}
 
 {% block content %}
 <section>
     <p class="auth-kicker">Home</p>
-    <h1 class="section-heading">Ola, {{ user.first_name|default:user.username }}! Esse e seu calendario espiritual.</h1>
+    <h1 class="section-heading">Olá, {{ user.first_name|default:user.username }}! Esse é seu calendário espiritual.</h1>
 
     <section class="psalm-band" aria-labelledby="psalmTitle">
         <p class="auth-kicker" id="psalmTitle">Salmo para hoje</p>
@@ -14,22 +14,22 @@
         <cite>{{ salmo.referencia }}</cite>
     </section>
 
-    <div class="panel calendar-toolbar" aria-label="Navegacao do calendario">
+    <div class="panel calendar-toolbar" aria-label="Navegação do calendário">
         <div class="period-control">
             <span class="period-label">Ano</span>
             <div class="period-stepper">
                 <button class="stepper-button" id="previousYear" type="button" aria-label="Ano anterior" title="Ano anterior">&larr;</button>
                 <output class="period-value" id="yearDisplay" aria-live="polite"></output>
-                <button class="stepper-button" id="nextYear" type="button" aria-label="Proximo ano" title="Proximo ano">&rarr;</button>
+                <button class="stepper-button" id="nextYear" type="button" aria-label="Próximo ano" title="Próximo ano">&rarr;</button>
             </div>
         </div>
 
         <div class="period-control">
-            <span class="period-label">Mes</span>
+            <span class="period-label">Mês</span>
             <div class="period-stepper">
-                <button class="stepper-button" id="previousMonth" type="button" aria-label="Mes anterior" title="Mes anterior">&larr;</button>
+                <button class="stepper-button" id="previousMonth" type="button" aria-label="Mês anterior" title="Mês anterior">&larr;</button>
                 <output class="period-value" id="monthDisplay" aria-live="polite"></output>
-                <button class="stepper-button" id="nextMonth" type="button" aria-label="Proximo mes" title="Proximo mes">&rarr;</button>
+                <button class="stepper-button" id="nextMonth" type="button" aria-label="Próximo mês" title="Próximo mês">&rarr;</button>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
             <div>
                 <h2 class="calendar-title" id="calendarTitle"></h2>
                 {% if user.is_authenticated %}
-                    <div class="calendar-legend" aria-label="Legenda do calendario">
+                    <div class="calendar-legend" aria-label="Legenda do calendário">
                         <span><i class="status-dot complete"></i>Preenchido</span>
                         <span><i class="status-dot pending"></i>Em branco</span>
                         <span><i class="status-dot empty"></i>Sem ramalhete</span>
@@ -74,7 +74,7 @@
     <div class="summary-header">
         <div>
             <p class="auth-kicker">Resumo mensal</p>
-            <h2 class="calendar-title" id="monthlySummaryTitle">Suas ofertas no mes</h2>
+            <h2 class="calendar-title" id="monthlySummaryTitle">Suas ofertas no mês</h2>
         </div>
         {% if user.is_authenticated %}
             <p class="section-copy" id="summaryPeriod" aria-live="polite"></p>
@@ -86,27 +86,27 @@
     {% if user.is_authenticated %}
         <div class="summary-grid">
             <article class="summary-card">
-                <span>Missa e comunhao</span>
+                <span>Missa e comunhão</span>
                 <strong data-summary-field="missa_comunhao">0</strong>
             </article>
             <article class="summary-card">
-                <span>Visita ao Santissimo</span>
+                <span>Visita ao Santíssimo</span>
                 <strong data-summary-field="visita_ao_santissimo">0</strong>
             </article>
             <article class="summary-card">
-                <span>Tercos</span>
+                <span>Terços</span>
                 <strong data-summary-field="tercos">0</strong>
             </article>
             <article class="summary-card">
-                <span>Exame de consciencia</span>
+                <span>Exame de consciência</span>
                 <strong data-summary-field="exame_de_consciencia">0</strong>
             </article>
             <article class="summary-card">
-                <span>Leitura espiritual e meditacao</span>
+                <span>Leitura espiritual e meditação</span>
                 <strong data-summary-field="leitura_espiritual_meditacao">0</strong>
             </article>
             <article class="summary-card">
-                <span>Sacrificio</span>
+                <span>Sacrifício</span>
                 <strong data-summary-field="sacrificio">0</strong>
             </article>
         </div>

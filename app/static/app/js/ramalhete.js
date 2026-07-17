@@ -36,9 +36,9 @@ if (ramalheteForm) {
                 throw new Error('Falha ao salvar.');
             }
 
-            updateStatus('Alteracoes salvas.');
+            updateStatus('Alterações salvas.');
         } catch (error) {
-            updateStatus('Nao foi possivel salvar. Tente novamente.', true);
+            updateStatus('Não foi possível salvar. Tente novamente.', true);
         }
     }
 

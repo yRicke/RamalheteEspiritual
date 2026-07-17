@@ -7,10 +7,10 @@
 <section>
     <div class="ramalhete-header">
         <div>
-            <p class="auth-kicker">Edicao do ramalhete</p>
+            <p class="auth-kicker">Edição do ramalhete</p>
             <h1 class="section-heading">Ramalhete de {{ ramalhete.data|date:"d/m/Y" }}</h1>
             <p class="section-copy">
-                As alteracoes sao salvas automaticamente.
+                As alterações são salvas automaticamente.
             </p>
         </div>
     </div>
@@ -25,37 +25,37 @@
         {% csrf_token %}
         <div class="form-grid">
             <div class="field">
-                <label for="missa_comunhao">Missa e comunhao</label>
+                <label for="missa_comunhao">Missa e comunhão</label>
                 <input id="missa_comunhao" name="missa_comunhao" type="number" min="0" value="{{ ramalhete.missa_comunhao|default:0 }}">
             </div>
 
             <div class="field">
-                <label for="visita_ao_santissimo">Visita ao Santissimo</label>
+                <label for="visita_ao_santissimo">Visita ao Santíssimo</label>
                 <input id="visita_ao_santissimo" name="visita_ao_santissimo" type="number" min="0" value="{{ ramalhete.visita_ao_santissimo|default:0 }}">
             </div>
 
             <div class="field">
-                <label for="tercos">Tercos</label>
+                <label for="tercos">Terços</label>
                 <input id="tercos" name="tercos" type="number" min="0" value="{{ ramalhete.tercos|default:0 }}">
             </div>
 
             <div class="field">
-                <label for="exame_de_consciencia">Exame de consciencia</label>
+                <label for="exame_de_consciencia">Exame de consciência</label>
                 <input id="exame_de_consciencia" name="exame_de_consciencia" type="number" min="0" value="{{ ramalhete.exame_de_consciencia|default:0 }}">
             </div>
 
             <div class="field">
-                <label for="leitura_espiritual_meditacao">Leitura espiritual e meditacao</label>
+                <label for="leitura_espiritual_meditacao">Leitura espiritual e meditação</label>
                 <input id="leitura_espiritual_meditacao" name="leitura_espiritual_meditacao" type="number" min="0" value="{{ ramalhete.leitura_espiritual_meditacao|default:0 }}">
             </div>
 
             <div class="field">
-                <label for="sacrificio">Sacrificio</label>
+                <label for="sacrificio">Sacrifício</label>
                 <input id="sacrificio" name="sacrificio" type="number" min="0" value="{{ ramalhete.sacrificio|default:0 }}">
             </div>
         </div>
 
-        <p class="save-status" id="saveStatus" aria-live="polite">Alteracoes salvas automaticamente.</p>
+        <p class="save-status" id="saveStatus" aria-live="polite">Alterações salvas automaticamente.</p>
     </form>
 </section>
 {% endblock %}

@@ -57,7 +57,7 @@ class AdminDashboardTests(TestCase):
 
         response = self.client.get(reverse('home'))
 
-        self.assertContains(response, 'Ola, Fulano! Esse e seu calendario espiritual.')
+        self.assertContains(response, 'Olá, Fulano! Esse é seu calendário espiritual.')
         self.assertContains(response, 'Salmo para hoje')
         self.assertContains(response, 'Hoje')
         self.assertContains(response, f'data-today="{timezone.localdate().isoformat()}"')
